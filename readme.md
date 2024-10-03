@@ -19,6 +19,7 @@
 {
   "RUT": "12345678-k",
   "numDoc": "123456789",
+  "email": "hugotoro@gmail.com",
   "password": "123",
   "name": "Hugo",
   "patSurName": "Toro",
