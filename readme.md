@@ -18,6 +18,7 @@
 ```json
 {
   "RUT": "12345678-k",
+  "numDoc": "123456789",
   "password": "123",
   "name": "Hugo",
   "patSurName": "Toro",
