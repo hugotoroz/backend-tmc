@@ -1,7 +1,8 @@
 const jwt = require("jsonwebtoken");
 const { getAll, getOne, create } = require("../models/patients.models");
 
-const secret = process.env.JWT_SECRET;
+const config = require("../config/auth.js");
+const secret = config.jwtSecret;
 
 const getAllPatients = async (req, res, next) => {
   try {
@@ -26,7 +27,8 @@ const createPatient = async (req, res, next) => {
     {
       sub,
       name,
-      exp: Date.now() + 60 * 1000,
+      // Token expires in 5 minutes
+      exp: Math.floor(Date.now() / 1000) + 60 * 5,
     },
     secret
   );

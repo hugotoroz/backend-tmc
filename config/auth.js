@@ -1,6 +1,6 @@
 module.exports = {
   // Clave secreta que proviene de .env
-  jwtSecret: process.env.JWT_SECRET || "your_secret_key",
+  jwtSecret: process.env.JWT_SECRET,
   // Tiempo de expiración para el token
   jwtExpiration: "1h",
   // Tiempo de expiración para el token de refresco (opcional)
