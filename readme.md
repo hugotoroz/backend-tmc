@@ -1,17 +1,17 @@
 # Endpoints
 
 ## PACIENTES
-
+### Obtener todos los pacientes
 - **Método:** GET
 - **Ruta:** /patients
 - **Respuesta:** Datos de todos los pacientes.
 - **Parámetros:** Auth Bearer Token.
-
+### Obtener un paciente por ID
 - **Método:** GET
 - **Ruta:** /patients/:id
 - **Respuesta:** Datos de un paciente
 - **Parámetros:** Auth Bearer Token.
-
+### Crear paciente
 - **Método:** POST
 - **Ruta:** /patients
 * **Parámetros (JSON):**
@@ -29,7 +29,7 @@
 - **Respuesta:** Bearer Token para manejo de sesiones y acceso a otros Endpoints.
 
 ## DOCTORES
-
+### Obtener todos los doctores
 - **Método:** GET
 - **Ruta:** /doctors
 - **Respuesta:** Datos de todos los doctores.
