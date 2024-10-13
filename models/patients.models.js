@@ -11,20 +11,36 @@ const getOne = async (req, res, next) => {
     req.params.id,
   ]);
 };
-const create = async (req, res, next) => {
-  return await pool.query(
-    "INSERT INTO usuarios (rut, email, password, nombre, ap_paterno, ap_materno, fec_nacimiento, telefono) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *",
+const create = async (patient) => {
+  // Encrypt the password
+  const hashedPassword = await encryptPassword(patient.password);
+  // Insert the patient into the database
+  const insertPatient = await pool.query(
+    "INSERT INTO usuarios (rut, email, clave, nom, ap_paterno, ap_materno, fec_nacimiento, telefono) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id,rut, email, CONCAT(nom ,' ', ap_paterno,' ', ap_materno) AS fullName",
     [
-      req.body.rut,
-      req.body.email,
-      encryptPassword(req.body.password),
-      req.body.name,
-      req.body.patSurName,
-      req.body.matSurName,
-      req.body.dateBirth,
-      req.body.cellphone,
+      patient.rut,
+      patient.email,
+      hashedPassword,
+      patient.name,
+      patient.patSurName,
+      patient.matSurName,
+      patient.dateBirth,
+      patient.cellphone,
     ]
   );
+  // Return the patient data
+  const { id, rut, email, fullName } = insertPatient.rows[0];
+  // Insert the patient role
+  await pool.query(
+    "INSERT INTO usuario_rol (fk_usuario_id, fk_rol_id) VALUES ($1, $2)",
+    [id, 3]
+  );
+
+  // Return the patient data
+  return {
+    status: "success",
+    data: { id, rut, email, fullName, role: "patient" },
+  };
 };
 
 module.exports = { getAll, getOne, create };

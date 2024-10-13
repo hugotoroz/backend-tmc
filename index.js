@@ -9,11 +9,19 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(cors());
 
+// Routes
 app.use(patientsRouter);
 app.use(usersRouter);
 
+// Error handling
 app.use((err, req, res, next) => {
-  return res.json({ message: err.message });
+  // Log the error
+  console.error(err.stack);
+  // Return a 500 status code and the error message
+  res.status(500).json({ status: "error", data: err.message });
 });
-app.listen(3000);
-console.log("Server started on port 3000");
+
+// Iniciar el servidor
+app.listen(3000, () => {
+  console.log("Server started on port 3000");
+});

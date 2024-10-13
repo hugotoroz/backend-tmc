@@ -38,7 +38,7 @@ const createPatient = async (req, res, next) => {
   const patient = req.body;
   try {
     const result = await create(patient);
-    res.json(result.rows);
+    res.json(result);
   } catch (error) {
     next(error);
   }
