@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const config = require("../config/auth.js");
-
+// function to verify the Bearer token
 const authMiddleware = (req, res, next) => {
   const authHeader = req.headers["authorization"];
   if (!authHeader) {
@@ -21,6 +21,7 @@ const authMiddleware = (req, res, next) => {
     next();
   });
 };
+// function to verify if the user is an admin
 const isAdminMiddleware = (req, res, next) => {};
 
 module.exports = { authMiddleware, isAdminMiddleware };

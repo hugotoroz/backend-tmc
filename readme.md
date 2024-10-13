@@ -1,5 +1,9 @@
 # Endpoints
 
+## USUARIOS
+### Obtener datos de una persona
+
+
 ## PACIENTES
 ### Obtener todos los pacientes
 - **Método:** GET
@@ -18,7 +22,6 @@
 ```json
 {
   "RUT": "12345678-k",
-  "numDoc": "123456789",
   "email": "hugotoro@gmail.com",
   "password": "123",
   "name": "Hugo",
