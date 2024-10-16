@@ -7,7 +7,7 @@ const {
 const { authMiddleware } = require("../middleware/auth.middleware.js");
 
 const router = Router();
-// Rutas aca
+// Routes
 router.get("/patients",authMiddleware, getAllPatients);
 router.get("/patients/:id", getPatientById);
 router.post("/patients", createPatient);

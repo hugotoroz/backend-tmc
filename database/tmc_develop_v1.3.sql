@@ -18,19 +18,6 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
-DROP DATABASE tmc_develop;
---
--- TOC entry 4999 (class 1262 OID 32828)
--- Name: tmc_develop; Type: DATABASE; Schema: -; Owner: postgres
---
-
-CREATE DATABASE tmc_develop WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = libc LOCALE = 'English_United States.1252';
-
-
-ALTER DATABASE tmc_develop OWNER TO postgres;
-
-\connect tmc_develop
-
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -45,21 +32,13 @@ SET row_security = off;
 --
 -- TOC entry 4 (class 2615 OID 2200)
 -- Name: public; Type: SCHEMA; Schema: -; Owner: pg_database_owner
---
 
-CREATE SCHEMA public;
-
-
-ALTER SCHEMA public OWNER TO pg_database_owner;
 
 --
 -- TOC entry 5000 (class 0 OID 0)
 -- Dependencies: 4
 -- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: pg_database_owner
 --
-
-COMMENT ON SCHEMA public IS 'standard public schema';
-
 
 SET default_tablespace = '';
 

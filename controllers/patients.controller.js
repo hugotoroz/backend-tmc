@@ -1,9 +1,5 @@
-const jwt = require("jsonwebtoken");
-
 const { getAll, getOne, create } = require("../models/patients.models");
-const config = require("../config/auth.js");
-
-const secret = config.jwtSecret;
+const { generateToken } = require("../config/auth");
 
 const getAllPatients = async (req, res, next) => {
   try {
@@ -38,22 +34,18 @@ const createPatient = async (req, res, next) => {
   const patient = req.body;
   try {
     const result = await create(patient);
-    res.json(result);
+    
+    const token = generateToken({
+      id: result.id,
+      rut: result.rut,
+      email: result.email,
+      fullName: result.full,
+      role: result.role,
+    });
+    res.json({ status: "success", data: { token: token } });
   } catch (error) {
     next(error);
   }
 };
 
 module.exports = { getAllPatients, getPatientById, createPatient };
-
-// const { id: sub, name } = { id: 1, name: "John Doe" };
-// const token = jwt.sign(
-//   {
-//     sub,
-//     name,
-//     // Token expires in 5 minutes
-//     exp: Math.floor(Date.now() / 1000) + 60 * 5,
-//   },
-//   secret
-// );
-// res.send({ token });

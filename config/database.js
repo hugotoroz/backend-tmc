@@ -6,6 +6,7 @@ const pool = new pg.Pool({
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
   database: process.env.DB_DATABASE,
-  ssl: true,
+  // SSL connection for production environment only
+  // ssl: true,
 });
 module.exports = { pool };

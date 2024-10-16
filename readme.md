@@ -2,6 +2,22 @@
 
 ## USUARIOS
 
+### Login
+
+- **Método:** POST
+- **Ruta:** /user/login
+
+* **Parámetros (JSON):**
+
+```json
+{
+  "rut": "12345678-k",
+  "password": "123"
+}
+```
+
+- **Respuesta:** Bearer Token para manejo de sesiones y acceso a otros Endpoints.
+
 ### Obtener datos de una persona
 
 - **Método:** GET
@@ -33,6 +49,7 @@
   }
 }
 ```
+
 ### Validar Número de Documento de una persona.
 
 - **Método:** GET
@@ -89,7 +106,7 @@
 
 ```json
 {
-  "RUT": "12345678-k",
+  "rut": "12345678-k",
   "email": "hugotoro@gmail.com",
   "password": "123",
   "name": "Hugo",
@@ -114,8 +131,36 @@
 ### Obtener un doctor por ID
 
 - **Método:** GET
-- **Ruta:** /patients/:id
+- **Ruta:** /doctors/:id
 - **Respuesta:** Datos de un paciente
 - **Parámetros:** Auth Bearer Token.
 
-### Crear Doctor
+### Obtener especialidades de un doctor
+
+- **Método:** GET
+- **Ruta:** /doctors/specialities.
+- **Respuesta:** Especialidades de un doctor.
+- **Parámetros:** Auth Bearer Token.
+
+### Crear doctor
+
+- **Método:** POST
+- **Ruta:** /doctors
+
+* **Parámetros (JSON):**
+
+```json
+{
+  "rut": "87654321-k",
+  "email": "torohugo@gmail.com",
+  "password": "123",
+  "name": "Hugo",
+  "patSurName": "Toro",
+  "matSurName": "Zúñiga",
+  "dateBirth": "2024-01-09",
+  "cellphone": "912345678",
+  "speciality": "1"
+}
+```
+
+- **Respuesta:** Bearer Token para manejo de sesiones y acceso a otros Endpoints.

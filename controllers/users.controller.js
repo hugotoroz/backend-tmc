@@ -1,4 +1,7 @@
 const axios = require("axios");
+const { login } = require("../models/users.models");
+const { generateToken } = require("../config/auth");
+
 
 const validateNumDoc = async (req, res, next) => {
   // JSON example format:
@@ -53,13 +56,27 @@ const getDataUser = async (req, res, next) => {
       .send({ status: "error", data: error.response.data });
   }
 };
-const login = async (req, res, next) => {
+const userLogin = async (req, res, next) => {
   // JSON example format:
   // {
   //   "RUT": "12345678-k",
   //   "password": "123",
   // }
   const user = req.body;
+  try {
+    const result = await login(user);
+    const token = generateToken({
+      id: result.data.id,
+      rut: result.data.rut,
+      email: result.data.email,
+      fullName: result.data.fullName,
+      role: result.data.role,
+    });
+    res.json({ status: "success", data: { token: token } });
+    // res.json({ status: "success", data: result });
+  } catch (error) {
+    next(error);
+  }
 };
 
-module.exports = { validateNumDoc, getDataUser };
+module.exports = { validateNumDoc, getDataUser, userLogin };

@@ -16,7 +16,7 @@ const create = async (patient) => {
   const hashedPassword = await encryptPassword(patient.password);
   // Insert the patient into the database
   const insertPatient = await pool.query(
-    "INSERT INTO usuarios (rut, email, clave, nom, ap_paterno, ap_materno, fec_nacimiento, telefono) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id,rut, email, CONCAT(nom ,' ', ap_paterno,' ', ap_materno) AS fullName",
+    "INSERT INTO usuarios (rut, email, clave, nom, ap_paterno, ap_materno, fec_nacimiento, telefono) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id,rut, email, CONCAT(nom ,' ', ap_paterno,' ', ap_materno) AS full",
     [
       patient.rut,
       patient.email,
@@ -29,7 +29,7 @@ const create = async (patient) => {
     ]
   );
   // Return the patient data
-  const { id, rut, email, fullName } = insertPatient.rows[0];
+  const { id, rut, email, full } = insertPatient.rows[0];
   // Insert the patient role
   await pool.query(
     "INSERT INTO usuario_rol (fk_usuario_id, fk_rol_id) VALUES ($1, $2)",
@@ -37,10 +37,7 @@ const create = async (patient) => {
   );
 
   // Return the patient data
-  return {
-    status: "success",
-    data: { id, rut, email, fullName, role: "patient" },
-  };
+  return { id, rut, email, full, role: "paciente" };
 };
 
 module.exports = { getAll, getOne, create };

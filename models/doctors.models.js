@@ -1,4 +1,5 @@
 const { pool } = require("../config/database.js");
+const { encryptPassword } = require("../config/password");
 
 const getAll = async (req, res, next) => {
   return await pool.query(
@@ -10,12 +11,16 @@ const getOne = async (req, res, next) => {
     req.params.id,
   ]);
 };
+const getSpecialities = async (req, res, next) => {
+  return await pool.query("SELECT * FROM especialidad");
+};
+
 const create = async (doctor) => {
   // Encrypt the password
   const hashedPassword = await encryptPassword("123");
   // Insert the doctor into the database
   const insertDoctor = await pool.query(
-    "INSERT INTO usuarios (rut, email, clave, nom, ap_paterno, ap_materno, fec_nacimiento, telefono, is_active) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 0) RETURNING id,rut, email, CONCAT(nom ,' ', ap_paterno,' ', ap_materno) AS fullName",
+    "INSERT INTO usuarios (rut, email, clave, nom, ap_paterno, ap_materno, fec_nacimiento, telefono, is_active) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 0) RETURNING id,rut, email, CONCAT(nom ,' ', ap_paterno,' ', ap_materno) AS full",
     [
       doctor.rut,
       doctor.email,
@@ -28,7 +33,7 @@ const create = async (doctor) => {
     ]
   );
   // Return the doctor data
-  const { id, rut, email, fullName } = insertDoctor.rows[0];
+  const { id, rut, email, full } = insertDoctor.rows[0];
   // Insert the doctor role
   await pool.query(
     "INSERT INTO usuario_rol (fk_usuario_id, fk_rol_id) VALUES ($1, $2)",
@@ -39,12 +44,11 @@ const create = async (doctor) => {
     "INSERT INTO doctor_especialidad (fk_doctor_id, fk_especialidad_id) VALUES ($1, $2)",
     [id, doctor.speciality]
   );
-
   // Return the doctor data
   return {
     status: "success",
-    data: { id, rut, email, fullName, role: "doctor" },
+    data: { id, rut, email, full, role: "doctor" },
   };
 };
 
-module.exports = { getAll, getOne, create };
+module.exports = { getAll, getOne, getSpecialities, create };
