@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "node --watch --env-file=.env.dev index.js",
-    "start": "node --watch --env-file=.env.prod index.js index.js"
+    "start": "node --watch --env-file=.env index.js"
   },
   "author": "",
   "license": "ISC",
