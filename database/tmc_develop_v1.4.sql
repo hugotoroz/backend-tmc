@@ -58,7 +58,6 @@ END;
 $$;
 
 
-ALTER FUNCTION public.generar_horario_con_intervalo(fecha date, hora_inicio time without time zone, hora_fin time without time zone, especialidad_id integer) OWNER TO postgres;
 
 --
 -- TOC entry 259 (class 1255 OID 49927)
@@ -109,7 +108,6 @@ END;
 $$;
 
 
-ALTER FUNCTION public.generar_horario_mensual(hora_inicio time without time zone, hora_fin time without time zone, especialidad_id integer) OWNER TO postgres;
 
 SET default_tablespace = '';
 
@@ -129,7 +127,6 @@ CREATE TABLE public.citas (
 );
 
 
-ALTER TABLE public.citas OWNER TO postgres;
 
 --
 -- TOC entry 216 (class 1259 OID 41737)
@@ -158,7 +155,6 @@ CREATE TABLE public.comunas (
 );
 
 
-ALTER TABLE public.comunas OWNER TO postgres;
 
 --
 -- TOC entry 218 (class 1259 OID 41743)
@@ -191,7 +187,6 @@ CREATE TABLE public.contratos (
 );
 
 
-ALTER TABLE public.contratos OWNER TO postgres;
 
 --
 -- TOC entry 5002 (class 0 OID 0)
@@ -231,7 +226,6 @@ CREATE TABLE public.direcciones (
 );
 
 
-ALTER TABLE public.direcciones OWNER TO postgres;
 
 --
 -- TOC entry 5003 (class 0 OID 0)
@@ -271,7 +265,6 @@ CREATE TABLE public.disponibilidad (
 );
 
 
-ALTER TABLE public.disponibilidad OWNER TO postgres;
 
 --
 -- TOC entry 5004 (class 0 OID 0)
@@ -309,7 +302,6 @@ CREATE TABLE public.doctor_especialidad (
 );
 
 
-ALTER TABLE public.doctor_especialidad OWNER TO postgres;
 
 --
 -- TOC entry 226 (class 1259 OID 41763)
@@ -338,7 +330,6 @@ CREATE TABLE public.documentos (
 );
 
 
-ALTER TABLE public.documentos OWNER TO postgres;
 
 --
 -- TOC entry 228 (class 1259 OID 41767)
@@ -368,7 +359,6 @@ CREATE TABLE public.especialidad (
 );
 
 
-ALTER TABLE public.especialidad OWNER TO postgres;
 
 --
 -- TOC entry 5005 (class 0 OID 0)
@@ -405,7 +395,6 @@ CREATE TABLE public.estados_cita (
 );
 
 
-ALTER TABLE public.estados_cita OWNER TO postgres;
 
 --
 -- TOC entry 5006 (class 0 OID 0)
@@ -443,7 +432,6 @@ CREATE TABLE public.observaciones (
 );
 
 
-ALTER TABLE public.observaciones OWNER TO postgres;
 
 --
 -- TOC entry 234 (class 1259 OID 41785)
@@ -471,7 +459,6 @@ CREATE TABLE public.regiones (
 );
 
 
-ALTER TABLE public.regiones OWNER TO postgres;
 
 --
 -- TOC entry 236 (class 1259 OID 41791)
@@ -500,7 +487,6 @@ CREATE TABLE public.roles (
 );
 
 
-ALTER TABLE public.roles OWNER TO postgres;
 
 --
 -- TOC entry 238 (class 1259 OID 41797)
@@ -528,7 +514,6 @@ CREATE TABLE public.tipos_contrato (
 );
 
 
-ALTER TABLE public.tipos_contrato OWNER TO postgres;
 
 --
 -- TOC entry 240 (class 1259 OID 41803)
@@ -556,7 +541,6 @@ CREATE TABLE public.tipos_documento (
 );
 
 
-ALTER TABLE public.tipos_documento OWNER TO postgres;
 
 --
 -- TOC entry 242 (class 1259 OID 41809)
@@ -585,7 +569,6 @@ CREATE TABLE public.usuario_rol (
 );
 
 
-ALTER TABLE public.usuario_rol OWNER TO postgres;
 
 --
 -- TOC entry 244 (class 1259 OID 41813)
@@ -621,7 +604,6 @@ CREATE TABLE public.usuarios (
 );
 
 
-ALTER TABLE public.usuarios OWNER TO postgres;
 
 --
 -- TOC entry 246 (class 1259 OID 41820)
