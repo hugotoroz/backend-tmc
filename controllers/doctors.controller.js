@@ -1,8 +1,22 @@
-const { getAll, getOne,getSpecialities, create } = require("../models/doctors.models");
+const {
+  getAll,
+  getOne,
+  getSpecialities,
+  getAppointments,
+  create,
+} = require("../models/doctors.models");
 
 const getAllDoctors = async (req, res, next) => {
   try {
     const result = await getAll();
+    res.json(result.rows);
+  } catch (error) {
+    next(error);
+  }
+};
+const getAllSpecialities = async (req, res, next) => {
+  try {
+    const result = await getSpecialities(req);
     res.json(result.rows);
   } catch (error) {
     next(error);
@@ -16,9 +30,11 @@ const getDoctorById = async (req, res, next) => {
     next(error);
   }
 };
-const getAllSpecialities = async (req, res, next) => {
+const getAppointmentsByDoctor = async (req, res, next) => {
+  // The user ID from the JWT token through the middleware
+  const userId = req.userId;
   try {
-    const result = await getSpecialities(req);
+    const result = await getAppointments(userId);
     res.json(result.rows);
   } catch (error) {
     next(error);
@@ -51,6 +67,7 @@ const createDoctor = async (req, res, next) => {
 module.exports = {
   getAllDoctors,
   getDoctorById,
+  getAppointmentsByDoctor,
   getAllSpecialities,
   createDoctor,
 };

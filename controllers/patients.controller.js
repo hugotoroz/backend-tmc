@@ -34,7 +34,7 @@ const createPatient = async (req, res, next) => {
   const patient = req.body;
   try {
     const result = await create(patient);
-    
+
     const token = generateToken({
       id: result.id,
       rut: result.rut,
@@ -48,4 +48,10 @@ const createPatient = async (req, res, next) => {
   }
 };
 
-module.exports = { getAllPatients, getPatientById, createPatient };
+
+
+module.exports = {
+  getAllPatients,
+  getPatientById,
+  createPatient,
+};

@@ -3,7 +3,7 @@ const { encryptPassword } = require("../config/password");
 
 const getAll = async (req, res, next) => {
   return await pool.query(
-    "SELECT u.* FROM usuarios u JOIN usuario_rol ur ON u.id = ur.fk_usuario_id JOIN roles r ON ur.fk_rol_id = r.id WHERE r.id = 3"
+    "SELECT * FROM public.pacientes WHERE is_active = 1"
   );
 };
 const getOne = async (req, res, next) => {
@@ -39,5 +39,6 @@ const create = async (patient) => {
   // Return the patient data
   return { id, rut, email, full, role: "paciente" };
 };
+
 
 module.exports = { getAll, getOne, create };

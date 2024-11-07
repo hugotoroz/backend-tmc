@@ -52,7 +52,7 @@
 
 ### Validar Número de Documento de una persona.
 
-- **Método:** GET
+- **Método:** POST
 - **Ruta:** /user/validate
 - **Respuesta:** Si Numero de documento es válido y vigencia del carnet.
 
@@ -77,6 +77,33 @@
     "extranjero": "0",
     "mensaje": "Vigente",
     "value": "1"
+  }
+}
+```
+### Actualizar datos de un Usuario (telefono o mail)
+
+- **Método:** PUT
+- **Ruta:** /user/update
+- **Respuesta:** Nuevo Bearer Token con la información actualizada.
+
+* **Parámetros (JSON):**
+
+```json
+{
+  // Los parámetros pueden ser o el email o el telefono.
+  "email": "paciente@tmc.cl",
+  "cellphone":"912345678"
+}
+```
+
+- **Respuesta (JSON):**
+
+```json
+{
+  "status": "success",
+  "message": "Usuario actualizado exitosamente",
+  "data": {
+    "token": "Bearer Token acá"
   }
 }
 ```
@@ -140,6 +167,12 @@
 - **Método:** GET
 - **Ruta:** /doctors/specialities.
 - **Respuesta:** Especialidades de un doctor.
+- **Parámetros:** Auth Bearer Token.
+
+### Obtener citas de un doctor
+- **Método:** GET
+- **Ruta:** /doctors/appointments.
+- **Respuesta:** Todas las citas médicas de un doctor. Independientemente si un paciente la tomó.
 - **Parámetros:** Auth Bearer Token.
 
 ### Crear doctor

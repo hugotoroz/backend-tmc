@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { login } = require("../models/users.models");
+const { login, update } = require("../models/users.models");
 const { generateToken } = require("../config/auth");
 
 
@@ -79,4 +79,36 @@ const userLogin = async (req, res, next) => {
   }
 };
 
-module.exports = { validateNumDoc, getDataUser, userLogin };
+const updateUser = async (req, res, next) => {
+  // The user ID and the Role now comes from the JWT token through the middleware
+  const userId = req.userId;
+  const userRole = req.userRole;
+
+
+
+  // Obtain the role in the JWT
+  const updateData = req.body;
+
+  try {
+    const result = await update(userId, updateData);
+    
+    // Generate new token with updated information
+    const token = generateToken({
+      id: result.id,
+      rut: result.rut,
+      email: result.email,
+      fullName: result.full,
+      role: userRole,
+    });
+
+    res.json({ 
+      status: "success", 
+      message: "Usuario actualizado exitosamente",
+      data: { token: token } 
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { validateNumDoc, getDataUser, userLogin, updateUser };
