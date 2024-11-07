@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "node --watch --env-file=.env.dev index.js",
-    "start": "node index.js"
+    "start": "NODE_TLS_REJECT_UNAUTHORIZED='0' node index.js"
   },
   "author": "",
   "license": "ISC",
