@@ -19,7 +19,7 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 
-
+CREATE SCHEMA public;
 
 --
 -- TOC entry 249 (class 1255 OID 49926)
