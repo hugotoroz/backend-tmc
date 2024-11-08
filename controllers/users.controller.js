@@ -1,14 +1,9 @@
 const axios = require("axios");
 const { login, update } = require("../models/users.models");
 const { generateToken } = require("../config/auth");
+const { asyncHandler, AppError } = require("../middleware/errors.middleware");
 
-
-const validateNumDoc = async (req, res, next) => {
-  // JSON example format:
-  // {
-  //   "rut": "12345678-k",
-  //   "numDoc": "123456789",
-  // }
+const validateNumDoc = asyncHandler(async (req, res) => {
   try {
     const user = req.body;
     const options = {
@@ -28,13 +23,9 @@ const validateNumDoc = async (req, res, next) => {
       .status(error.response.status)
       .send({ status: "error", data: error.response.data });
   }
-};
+});
 
-const getDataUser = async (req, res, next) => {
-  // JSON example format:
-  // {
-  //   "rut": "12345678-k",
-  // }
+const getDataUser = asyncHandler(async (req, res) => {
   try {
     const user = req.body;
     const options = {
@@ -55,13 +46,8 @@ const getDataUser = async (req, res, next) => {
       .status(error.response.status)
       .send({ status: "error", data: error.response.data });
   }
-};
-const userLogin = async (req, res, next) => {
-  // JSON example format:
-  // {
-  //   "RUT": "12345678-k",
-  //   "password": "123",
-  // }
+});
+const userLogin = asyncHandler(async (req, res) => {
   const user = req.body;
   try {
     const result = await login(user);
@@ -73,25 +59,22 @@ const userLogin = async (req, res, next) => {
       role: result.data.role,
     });
     res.json({ status: "success", data: { token: token } });
-    // res.json({ status: "success", data: result });
   } catch (error) {
-    next(error);
+    throw new AppError(error, 500);
   }
-};
+});
 
-const updateUser = async (req, res, next) => {
+const updateUser = asyncHandler(async (req, res) => {
   // The user ID and the Role now comes from the JWT token through the middleware
   const userId = req.userId;
   const userRole = req.userRole;
-
-
 
   // Obtain the role in the JWT
   const updateData = req.body;
 
   try {
     const result = await update(userId, updateData);
-    
+
     // Generate new token with updated information
     const token = generateToken({
       id: result.id,
@@ -101,14 +84,14 @@ const updateUser = async (req, res, next) => {
       role: userRole,
     });
 
-    res.json({ 
-      status: "success", 
+    res.json({
+      status: "success",
       message: "Usuario actualizado exitosamente",
-      data: { token: token } 
+      data: { token: token },
     });
   } catch (error) {
-    next(error);
+    throw new AppError(error, 500);
   }
-};
+});
 
 module.exports = { validateNumDoc, getDataUser, userLogin, updateUser };

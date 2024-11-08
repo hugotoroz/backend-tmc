@@ -1,10 +1,10 @@
 const { pool } = require("../config/database.js");
 const { encryptPassword } = require("../config/password");
 
+
+
 const getAll = async (req, res, next) => {
-  return await pool.query(
-    "SELECT * FROM public.doctores WHERE is_active = 1"
-  );
+  return await pool.query("SELECT * FROM public.doctores WHERE is_active = 1");
 };
 const getSpecialities = async (req, res, next) => {
   return await pool.query("SELECT * FROM especialidad");
@@ -14,12 +14,6 @@ const getOne = async (req, res, next) => {
     req.params.id,
   ]);
 };
-const getAppointments = async (doctorId) => {
-  return await pool.query("select d.fecha,d.hora_inicio,d.hora_fin,c.fecha_agendada,c.fk_especialidad_id as id_especialidad, e.nom as nombre_especialidad,ec.nombre as estado,p.id as id_paciente, p.rut as rut_paciente, CONCAT(p.nom,' ',p.ap_paterno,' ',p.ap_materno) AS nombre_paciente from disponibilidad d left join citas c on d.id = c.fk_disponibilidad_id left join estados_cita ec on c.fk_estado_cita_id = ec.id left join especialidad e on c.fk_especialidad_id = e.id left join public.pacientes p on c.fk_paciente_id = p.id where d.fk_doctor_id = $1", [
-    doctorId,
-  ]);
-};
-
 
 const create = async (doctor) => {
   // Encrypt the password
@@ -57,4 +51,4 @@ const create = async (doctor) => {
   };
 };
 
-module.exports = { getAll, getOne, getSpecialities, create, getAppointments };
+module.exports = { getAll, getOne, getSpecialities, create };

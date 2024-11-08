@@ -21,7 +21,7 @@
 ### Obtener datos de una persona
 
 - **Método:** GET
-- **Ruta:** /user/data
+- **Ruta:** api/user/data
 - **Respuesta:** Datos de una persona.
 
 * **Parámetros (JSON):**
@@ -53,7 +53,7 @@
 ### Validar Número de Documento de una persona.
 
 - **Método:** POST
-- **Ruta:** /user/validate
+- **Ruta:** api/user/validate
 - **Respuesta:** Si Numero de documento es válido y vigencia del carnet.
 
 * **Parámetros (JSON):**
@@ -83,7 +83,7 @@
 ### Actualizar datos de un Usuario (telefono o mail)
 
 - **Método:** PUT
-- **Ruta:** /user/update
+- **Ruta:** api/user/update
 - **Respuesta:** Nuevo Bearer Token con la información actualizada.
 
 * **Parámetros (JSON):**
@@ -113,21 +113,21 @@
 ### Obtener todos los pacientes
 
 - **Método:** GET
-- **Ruta:** /patients
+- **Ruta:** api/patients
 - **Respuesta:** Datos de todos los pacientes.
 - **Parámetros:** Auth Bearer Token.
 
 ### Obtener un paciente por ID
 
 - **Método:** GET
-- **Ruta:** /patients/:id
+- **Ruta:** api/patients/:id
 - **Respuesta:** Datos de un paciente
 - **Parámetros:** Auth Bearer Token.
 
 ### Crear paciente
 
 - **Método:** POST
-- **Ruta:** /patients
+- **Ruta:** api/patients
 
 * **Parámetros (JSON):**
 
@@ -146,39 +146,47 @@
 
 - **Respuesta:** Bearer Token para manejo de sesiones y acceso a otros Endpoints.
 
+## CITAS MÉDICAS
+
+### Obtener citas de un doctor
+- **Método:** GET
+- **Ruta:** api/doctors/appointments.
+- **Respuesta:** Todas las citas médicas de un doctor. Independientemente si un paciente la tomó.
+- **Parámetros:** Auth Bearer Token.
+
+### Obtener citas de un paciente
+- **Método:** GET
+- **Ruta:** api/patients/appointments.
+- **Respuesta:** Todas las citas médicas de un paciente.
+- **Parámetros:** Auth Bearer Token.
+
 ## DOCTORES
 
 ### Obtener todos los doctores
 
 - **Método:** GET
-- **Ruta:** /doctors
+- **Ruta:** api/doctors
 - **Respuesta:** Datos de todos los doctores.
 - **Parámetros:** Auth Bearer Token.
 
 ### Obtener un doctor por ID
 
 - **Método:** GET
-- **Ruta:** /doctors/:id
+- **Ruta:** api/doctors/:id
 - **Respuesta:** Datos de un paciente
 - **Parámetros:** Auth Bearer Token.
 
 ### Obtener especialidades de un doctor
 
 - **Método:** GET
-- **Ruta:** /doctors/specialities.
+- **Ruta:** api/doctors/specialities.
 - **Respuesta:** Especialidades de un doctor.
-- **Parámetros:** Auth Bearer Token.
-
-### Obtener citas de un doctor
-- **Método:** GET
-- **Ruta:** /doctors/appointments.
-- **Respuesta:** Todas las citas médicas de un doctor. Independientemente si un paciente la tomó.
 - **Parámetros:** Auth Bearer Token.
 
 ### Crear doctor
 
 - **Método:** POST
-- **Ruta:** /doctors
+- **Ruta:** api/doctors
 
 * **Parámetros (JSON):**
 

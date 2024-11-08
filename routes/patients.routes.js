@@ -5,10 +5,20 @@ const {
   createPatient,
 } = require("../controllers/patients.controller.js");
 const { authMiddleware } = require("../middleware/auth.middleware.js");
-
+const { methodNotAllowed } = require("../middleware/errors.middleware.js");
 const router = Router();
-// Routes
-router.get("/patients", authMiddleware, getAllPatients);
-router.get("/patients/:id", getPatientById);
-router.post("/patients", createPatient);
+
+router
+  .route("/")
+  .get(authMiddleware, getAllPatients)
+  .all(methodNotAllowed(["GET"]));
+router
+  .route("/:id")
+  .get(getPatientById)
+  .all(methodNotAllowed(["GET"]));
+router
+  .route("/")
+  .post(createPatient)
+  .all(methodNotAllowed(["POST"]));
+  
 module.exports = { patientsRouter: router };

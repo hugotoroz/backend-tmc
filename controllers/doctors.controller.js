@@ -2,72 +2,48 @@ const {
   getAll,
   getOne,
   getSpecialities,
-  getAppointments,
   create,
 } = require("../models/doctors.models");
+const { asyncHandler, AppError } = require("../middleware/errors.middleware");
 
-const getAllDoctors = async (req, res, next) => {
+const getAllDoctors = asyncHandler(async (req, res) => {
   try {
     const result = await getAll();
     res.json(result.rows);
   } catch (error) {
-    next(error);
+    throw new AppError("Error al obtener doctores", 500);
   }
-};
-const getAllSpecialities = async (req, res, next) => {
+});
+const getAllSpecialities = asyncHandler(async (req, res) => {
   try {
     const result = await getSpecialities(req);
     res.json(result.rows);
   } catch (error) {
-    next(error);
+    throw new AppError("Error al obtener especialidades", 500);
   }
-};
-const getDoctorById = async (req, res, next) => {
+});
+const getDoctorById = asyncHandler(async (req, res) => {
   try {
     const result = await getOne(req);
     res.json(result.rows);
   } catch (error) {
-    next(error);
+    throw new AppError("Error al obtener doctor", 500);
   }
-};
-const getAppointmentsByDoctor = async (req, res, next) => {
-  // The user ID from the JWT token through the middleware
-  const userId = req.userId;
-  try {
-    const result = await getAppointments(userId);
-    res.json(result.rows);
-  } catch (error) {
-    next(error);
-  }
-};
+});
 
-const createDoctor = async (req, res, next) => {
-  // Obtain the doctor data from the request
-  // JSON example format:
-  // {
-  //     "rut": "12345678-k",
-  //     "email": "hugotoro@gmail.com",
-  //     "password": "123",
-  //     "name": "Hugo",
-  //     "patSurName": "Toro",
-  //     "matSurName": "Zúñiga",
-  //     "dateBirth": "2024-01-09",
-  //     "cellphone": "912345678",
-  //     "speciality": "1"
-  //   }
+const createDoctor = asyncHandler(async (req, res) => {
   const doctor = req.body;
   try {
     const result = await create(doctor);
     res.json(result);
   } catch (error) {
-    next(error);
+    throw new AppError("Error al crear doctor", 500);
   }
-};
+});
 
 module.exports = {
   getAllDoctors,
   getDoctorById,
-  getAppointmentsByDoctor,
   getAllSpecialities,
   createDoctor,
 };

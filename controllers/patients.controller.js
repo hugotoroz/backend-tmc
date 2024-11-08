@@ -1,36 +1,26 @@
 const { getAll, getOne, create } = require("../models/patients.models");
 const { generateToken } = require("../config/auth");
+const { asyncHandler, AppError } = require("../middleware/errors.middleware");
 
-const getAllPatients = async (req, res, next) => {
+
+const getAllPatients = asyncHandler(async (req, res) => {
   try {
     const result = await getAll();
     res.json(result.rows);
   } catch (error) {
-    next(error);
+    throw new AppError("Error al obtener pacientes", 500);
   }
-};
-const getPatientById = async (req, res, next) => {
+});
+const getPatientById = asyncHandler(async (req, res) => {
   try {
     const result = await getOne(req);
     res.json(result.rows);
   } catch (error) {
-    next(error);
+    throw new AppError("Error al obtener paciente", 500);
   }
-};
+});
 
-const createPatient = async (req, res, next) => {
-  // Obtain the patient data from the request
-  // JSON example format:
-  // {
-  //   "RUT": "12345678-k",
-  //   "email": "hugotoro@gmail.com",
-  //   "password": "123",
-  //   "name": "Hugo",
-  //   "patSurName": "Toro",
-  //   "matSurName": "Zúñiga",
-  //   "dateBirth": "2024-01-09",
-  //   "cellphone": "912345678",
-  // }
+const createPatient = asyncHandler(async (req, res) => {
   const patient = req.body;
   try {
     const result = await create(patient);
@@ -44,9 +34,9 @@ const createPatient = async (req, res, next) => {
     });
     res.json({ status: "success", data: { token: token } });
   } catch (error) {
-    next(error);
+    throw new AppError("Error crear el paciente", 500);
   }
-};
+});
 
 
 

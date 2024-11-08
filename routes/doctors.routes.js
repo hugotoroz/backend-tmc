@@ -4,15 +4,26 @@ const {
   getDoctorById,
   getAllSpecialities,
   createDoctor,
-  getAppointmentsByDoctor,
 } = require("../controllers/doctors.controller.js");
 const { authMiddleware } = require("../middleware/auth.middleware.js");
+const { methodNotAllowed } = require("../middleware/errors.middleware.js");
 const router = Router();
-// Routes]
-router.get("/doctors/appointments", authMiddleware, getAppointmentsByDoctor);
-router.get("/doctors/specialities", authMiddleware, getAllSpecialities);
-router.get("/doctors", authMiddleware, getAllDoctors);
-router.get("/doctors/:id", getDoctorById);
-router.post("/doctors", createDoctor);
+
+router
+  .route("/specialities")
+  .get(authMiddleware, getAllSpecialities)
+  .all(methodNotAllowed(["GET"]));
+router
+  .route("/")
+  .get(authMiddleware, getAllDoctors)
+  .all(methodNotAllowed(["GET"]));
+router
+  .route("/:id")
+  .get(getDoctorById)
+  .all(methodNotAllowed(["GET"]));
+router
+  .route("/")
+  .post(createDoctor)
+  .all(methodNotAllowed(["POST"]));
 
 module.exports = { doctorsRouter: router };

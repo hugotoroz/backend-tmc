@@ -4,24 +4,35 @@ const cors = require("cors");
 const { patientsRouter } = require("./routes/patients.routes.js");
 const { doctorsRouter } = require("./routes/doctors.routes.js");
 const { usersRouter } = require("./routes/users.routes.js");
+const { appointmentsRouter } = require("./routes/appointments.routes.js");
+const { globalErrorHandler, notFound } = require("./middleware/errors.middleware.js");
 
 const app = express();
+
+// Middleware globales
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(cors());
 
 // Routes
-app.use(patientsRouter);
-app.use(usersRouter);
-app.use(doctorsRouter);
+app.use('/api/patients', patientsRouter);
+app.use('/api/user', usersRouter);
+app.use('/api/doctors', doctorsRouter);
+app.use('/api/appointments', appointmentsRouter);
 
-// Error handling
-app.use((err, req, res, next) => {
-  // Log the error
-  console.error(err.stack);
-  // Return a 500 status code and the error message
-  res.status(500).json({ status: "error", data: err.message });
+// Health check
+app.get("/", (req, res) => {
+  res.json({ 
+    status: "success", 
+    data: "Typical Medical Center's API is running!" 
+  });
 });
+
+// Manejo de rutas no encontradas
+app.use(notFound);
+
+// Manejo global de errores
+app.use(globalErrorHandler);
 
 // Iniciar el servidor
 app.listen(process.env.PORT, () => {

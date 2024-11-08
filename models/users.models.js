@@ -1,5 +1,6 @@
 const { pool } = require("../config/database.js");
 const { comparePassword } = require("../config/password.js");
+const { AppError } = require("../middleware/errors.middleware");
 
 const login = async (user) => {
   try {
@@ -10,12 +11,12 @@ const login = async (user) => {
     );
     // Check if the user exists
     if (response.rowCount === 0) {
-      throw new Error("User not found");
+      throw new AppError("User not found", 404);
     }
     // Check if the password is correct
     const match = await comparePassword(user.password, response.rows[0].clave);
     if (!match) {
-      throw new Error("Invalid password");
+      throw new AppError("Invalid password", 401);
     }
     // Return the user data
     return {
@@ -29,7 +30,7 @@ const login = async (user) => {
       },
     };
   } catch (error) {
-    throw error;
+    throw AppError(error, 500);
   }
 };
 

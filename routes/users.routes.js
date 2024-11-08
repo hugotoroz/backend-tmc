@@ -6,12 +6,24 @@ const {
   updateUser,
 } = require("../controllers/users.controller.js");
 const { authMiddleware } = require("../middleware/auth.middleware.js");
-
+const { methodNotAllowed } = require("../middleware/errors.middleware.js");
 const router = Router();
 
-router.post("/user/validate", validateNumDoc);
-router.post("/user/data", getDataUser);
-router.post("/user/login", userLogin);
-router.put("/user/update", authMiddleware, updateUser);
+router
+  .route("/validate")
+  .post(validateNumDoc)
+  .all(methodNotAllowed(["POST"]));
+router
+  .route("/data")
+  .post(getDataUser)
+  .all(methodNotAllowed(["POST"]));
+router
+  .route("/login")
+  .post(userLogin)
+  .all(methodNotAllowed(["POST"]));
+router
+  .route("/update")
+  .put(authMiddleware, updateUser)
+  .all(methodNotAllowed(["PUT"]));
 
 module.exports = { usersRouter: router };
