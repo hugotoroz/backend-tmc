@@ -16,10 +16,10 @@ const getAllDoctors = asyncHandler(async (req, res) => {
 });
 const getAllSpecialities = asyncHandler(async (req, res) => {
   try {
-    const result = await getSpecialities(req);
+    const result = await getSpecialities();
     res.json(result.rows);
   } catch (error) {
-    throw new AppError("Error al obtener especialidades", 500);
+    throw new AppError("Error al obtener especialidades" + error, 500);
   }
 });
 const getDoctorById = asyncHandler(async (req, res) => {
