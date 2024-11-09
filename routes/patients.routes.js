@@ -11,14 +11,11 @@ const router = Router();
 router
   .route("/")
   .get(authMiddleware, getAllPatients)
-  .all(methodNotAllowed(["GET"]));
+  .post(createPatient)
+  .all(methodNotAllowed(["GET", "POST"]));
 router
   .route("/:id")
-  .get(getPatientById)
+  .get(authMiddleware, getPatientById)
   .all(methodNotAllowed(["GET"]));
-router
-  .route("/")
-  .post(createPatient)
-  .all(methodNotAllowed(["POST"]));
   
 module.exports = { patientsRouter: router };

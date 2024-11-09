@@ -80,6 +80,7 @@
   }
 }
 ```
+
 ### Actualizar datos de un Usuario (telefono o mail)
 
 - **Método:** PUT
@@ -92,7 +93,7 @@
 {
   // Los parámetros pueden ser o el email o el telefono.
   "email": "paciente@tmc.cl",
-  "cellphone":"912345678"
+  "cellphone": "912345678"
 }
 ```
 
@@ -107,6 +108,66 @@
   }
 }
 ```
+
+### Activar o desactivar un usuario
+
+- **Método:** PUT
+- **Ruta:** api/user/status
+- **Respuesta:** Datos del usuario.
+
+* **Parámetros (JSON):**
+
+```json
+{
+  "rut": "12345678-k"
+}
+```
+
+- **Respuesta (JSON):**
+
+```json
+{
+  "status": "success",
+  "message": "Usuario actualizado exitosamente",
+  "data": {
+    "rut": "12345678-k",
+    "email": "paciente@tmc.cl",
+    // Este valor cambiará dependiendo si el usuario se activó o no.
+    "is_active": 1
+  }
+}
+```
+### Eliminar un usuario
+
+- **Método:** DELETE
+- **Ruta:** api/user/delete
+- **Respuesta:** Datos del usuario.
+
+* **Parámetros (JSON):**
+
+```json
+{
+  "rut": "12345678-k"
+}
+```
+
+- **Respuesta (JSON):**
+
+```json
+{
+  "status": "success",
+  "message": "Usuario actualizado exitosamente",
+  "data": {
+    "rut": "12345678-k",
+    "email": "paciente@tmc.cl",
+    // Este valor cambiará dependiendo si el usuario se activó o no.
+    "is_active": 1
+  }
+}
+```
+
+
+
 
 ## PACIENTES
 
@@ -136,9 +197,10 @@
   "rut": "12345678-k",
   "email": "hugotoro@gmail.com",
   "password": "123",
-  "name": "Hugo",
-  "patSurName": "Toro",
-  "matSurName": "Zúñiga",
+  "name": "HUGO ALBERTO",
+  "patSurName": "TORO",
+  "matSurName": "ZÚÑIGA",
+  "genre": "MASCULINO",
   "dateBirth": "2024-01-09",
   "cellphone": "912345678"
 }
@@ -149,12 +211,14 @@
 ## CITAS MÉDICAS
 
 ### Obtener citas de un doctor
+
 - **Método:** GET
 - **Ruta:** api/doctors/appointments.
 - **Respuesta:** Todas las citas médicas de un doctor. Independientemente si un paciente la tomó.
 - **Parámetros:** Auth Bearer Token.
 
 ### Obtener citas de un paciente
+
 - **Método:** GET
 - **Ruta:** api/patients/appointments.
 - **Respuesta:** Todas las citas médicas de un paciente.
@@ -195,12 +259,14 @@
   "rut": "87654321-k",
   "email": "torohugo@gmail.com",
   "password": "123",
-  "name": "Hugo",
-  "patSurName": "Toro",
-  "matSurName": "Zúñiga",
+  "name": "HUGO ALBERTO",
+  "patSurName": "TORO",
+  "matSurName": "ZUÑIGA",
+  "genre": "MASCULINO",
   "dateBirth": "2024-01-09",
   "cellphone": "912345678",
-  "speciality": "1"
+  // Se puede enviar más de una especialidad.
+  "specialities": ["1", "2", "3"]
 }
 ```
 

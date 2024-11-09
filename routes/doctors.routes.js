@@ -16,14 +16,11 @@ router
 router
   .route("/")
   .get(authMiddleware, getAllDoctors)
-  .all(methodNotAllowed(["GET"]));
+  .post(createDoctor)
+  .all(methodNotAllowed(["GET"], ["POST"]));
 router
   .route("/:id")
-  .get(getDoctorById)
+  .get(authMiddleware, getDoctorById)
   .all(methodNotAllowed(["GET"]));
-router
-  .route("/")
-  .post(createDoctor)
-  .all(methodNotAllowed(["POST"]));
 
 module.exports = { doctorsRouter: router };

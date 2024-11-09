@@ -14,7 +14,7 @@ const getPatientsAppointments = async (patientId) => {
   );
 };
 
-const generateDoctorAppointments = async (req, res, next) => {
+const generateDoctorAppointments = async (req, res) => {
   const { startTime, endTime, speciality, weekdays, saturdays, sundays } =
     req.body;
   if (weekdays == false && saturdays == false && sundays == false) {

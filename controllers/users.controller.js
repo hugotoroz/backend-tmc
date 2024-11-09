@@ -1,5 +1,10 @@
 const axios = require("axios");
-const { login, update } = require("../models/users.models");
+const {
+  login,
+  update,
+  toggleStatus,
+  deleteU,
+} = require("../models/users.models");
 const { generateToken } = require("../config/auth");
 const { asyncHandler, AppError } = require("../middleware/errors.middleware");
 
@@ -94,4 +99,31 @@ const updateUser = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { validateNumDoc, getDataUser, userLogin, updateUser };
+const toggleStatusUser = asyncHandler(async (req, res) => {
+  const user = req.body;
+  try {
+    const result = await toggleStatus(user.rut);
+    res.json(result);
+  } catch (error) {
+    throw new AppError("Error:" + error, 500);
+  }
+});
+
+const deleteUser = asyncHandler(async (req, res) => {
+  const rut = req.body.rut;
+  try {
+    const result = await deleteU(rut);
+    res.json(result);
+  } catch (error) {
+    throw new AppError(error, 500);
+  }
+});
+
+module.exports = {
+  validateNumDoc,
+  getDataUser,
+  userLogin,
+  updateUser,
+  toggleStatusUser,
+  deleteUser,
+};

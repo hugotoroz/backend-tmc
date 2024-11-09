@@ -1,8 +1,6 @@
 const { pool } = require("../config/database.js");
 const { encryptPassword } = require("../config/password");
 
-
-
 const getAll = async (req, res, next) => {
   return await pool.query("SELECT * FROM public.doctores WHERE is_active = 1");
 };
@@ -16,39 +14,66 @@ const getOne = async (req, res, next) => {
 };
 
 const create = async (doctor) => {
-  // Encrypt the password
-  const hashedPassword = await encryptPassword("123");
-  // Insert the doctor into the database
-  const insertDoctor = await pool.query(
-    "INSERT INTO usuarios (rut, email, clave, nom, ap_paterno, ap_materno, fec_nacimiento, telefono, is_active) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 0) RETURNING id,rut, email, CONCAT(nom ,' ', ap_paterno,' ', ap_materno) AS full",
-    [
+  try {
+    // Encrypt the password
+    const hashedPassword = await encryptPassword(doctor.password);
+    // Look the RUT in the database
+    const rutExist = await pool.query("SELECT * FROM usuarios WHERE rut = $1", [
       doctor.rut,
-      doctor.email,
-      hashedPassword,
-      doctor.name,
-      doctor.patSurName,
-      doctor.matSurName,
-      doctor.dateBirth,
-      doctor.cellphone,
-    ]
-  );
-  // Return the doctor data
-  const { id, rut, email, full } = insertDoctor.rows[0];
-  // Insert the doctor role
-  await pool.query(
-    "INSERT INTO usuario_rol (fk_usuario_id, fk_rol_id) VALUES ($1, $2)",
-    [id, 2]
-  );
-  // Insert the doctor speciality
-  await pool.query(
-    "INSERT INTO doctor_especialidad (fk_doctor_id, fk_especialidad_id) VALUES ($1, $2)",
-    [id, doctor.speciality]
-  );
-  // Return the doctor data
-  return {
-    status: "success",
-    data: { id, rut, email, full, role: "doctor" },
-  };
+    ]);
+    if (rutExist.rows.length > 0) {
+      return { status: "error", message: "El RUT ya está registrado" };
+    }
+    // Look the email in the database
+    const emailExist = await pool.query(
+      "SELECT * FROM usuarios WHERE email = $1",
+      [doctor.email]
+    );
+    if (emailExist.rows.length > 0) {
+      return { status: "error", message: "El correo ya está registrado" };
+    }
+    // Insert the doctor into the database
+    const insertDoctor = await pool.query(
+      "INSERT INTO usuarios (rut, email, clave, nom, ap_paterno, ap_materno, fec_nacimiento, telefono, genero, is_active, is_row) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, 1, 1) RETURNING id,rut, email, CONCAT(nom ,' ', ap_paterno,' ', ap_materno) AS full",
+      [
+        doctor.rut,
+        doctor.email,
+        hashedPassword,
+        doctor.name,
+        doctor.patSurName,
+        doctor.matSurName,
+        doctor.dateBirth,
+        doctor.cellphone,
+        doctor.genre,
+      ]
+    );
+    // Return the doctor data
+    const { id, rut, email, full } = insertDoctor.rows[0];
+    // Insert the doctor role
+    await pool.query(
+      "INSERT INTO usuario_rol (fk_usuario_id, fk_rol_id) VALUES ($1, $2)",
+      [id, 2]
+    );
+    // Insert the doctor specialities
+    const client = await pool.connect();
+    await client.query("BEGIN");
+    for (const specialityId of doctor.specialities) {
+      await client.query(
+        `INSERT INTO doctor_especialidad (fk_doctor_id, fk_especialidad_id) 
+         VALUES ($1, $2)`,
+        [id, specialityId]
+      );
+    }
+    await client.query("COMMIT");
+
+    // Return the doctor data
+    return {
+      status: "success",
+      data: { id, rut, email, full, role: "doctor" },
+    };
+  } catch (error) {
+    return error;
+  }
 };
 
 module.exports = { getAll, getOne, getSpecialities, create };

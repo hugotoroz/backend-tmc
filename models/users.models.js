@@ -34,7 +34,7 @@ const login = async (user) => {
   }
 };
 
-const update = async (userId, updateData, userRole) => {
+const update = async (userId, updateData) => {
   // Check that only email and cellphone are being updated
   const allowedUpdates = ["email", "cellphone"];
   const updates = Object.keys(updateData).filter((key) =>
@@ -87,4 +87,41 @@ const update = async (userId, updateData, userRole) => {
   };
 };
 
-module.exports = { login, update };
+const toggleStatus = async (rut) => {
+  // isActive = isActive === true ? 1 : 0;
+
+  // Search the user in the database
+  const user = await pool.query("SELECT * FROM usuarios WHERE rut = $1", [rut]);
+  // Check if the user exists
+  if (user.rowCount === 0) {
+    throw new AppError("Usuario no encontrado", 404);
+  }
+
+  // Update the user status (if its 0, it will be 1 and vice versa)
+  const isActive = user.rows[0].is_active == 1 ? 0 : 1;
+
+  const result = await pool.query(
+    "UPDATE usuarios SET is_active = $1 WHERE rut = $2 RETURNING rut, email, is_active",
+    [isActive, rut]
+  );
+  return {
+    status: "success",
+    data: result.rows[0],
+  };
+};
+
+const deleteU = async (rut) => {
+  const result = await pool.query(
+    "UPDATE usuarios SET is_row = 0 WHERE rut = $1 RETURNING rut, email, is_row",
+    [rut]
+  );
+  if (result.rows.length === 0) {
+    throw new Error("Usuario no encontrado");
+  }
+  return {
+    status: "success",
+    data: result.rows[0],
+  };
+};
+
+module.exports = { login, update, toggleStatus, deleteU };

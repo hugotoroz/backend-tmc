@@ -34,7 +34,7 @@ const createPatient = asyncHandler(async (req, res) => {
     });
     res.json({ status: "success", data: { token: token } });
   } catch (error) {
-    throw new AppError("Error crear el paciente", 500);
+    throw new AppError("Error crear el paciente:" + error, 500);
   }
 });
 
