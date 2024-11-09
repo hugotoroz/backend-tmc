@@ -11,7 +11,7 @@ const router = Router();
 
 router
   .route("/specialities")
-  .get(authMiddleware, getAllSpecialities)
+  .get(getAllSpecialities)
   .all(methodNotAllowed(["GET"]));
 router
   .route("/")
