@@ -224,7 +224,7 @@
 
 ### Obtener citas médicas
 
-- **Método:** PUT
+- **Método:** GET
 - **Ruta:** api/appointments/search
 - **Respuesta:** Citas médicas disponibles.
 - **Parámetros:** 
