@@ -1,17 +1,69 @@
 const { pool } = require("../config/database.js");
 
 const getDoctorAppointments = async (doctorId) => {
+  return await pool.query(`select * from citas_medicas where id_doctor = $1`, [
+    doctorId,
+  ]);
+};
+const getPatientsAppointments = async (patientId) => {
   return await pool.query(
-    "select d.fecha,d.hora_inicio,d.hora_fin,c.fecha_agendada,c.fk_especialidad_id as id_especialidad, e.nom as nombre_especialidad,ec.nombre as estado,p.id as id_paciente, p.rut as rut_paciente, CONCAT(p.nom,' ',p.ap_paterno,' ',p.ap_materno) AS nombre_paciente from disponibilidad d left join citas c on d.id = c.fk_disponibilidad_id left join estados_cita ec on c.fk_estado_cita_id = ec.id left join especialidad e on c.fk_especialidad_id = e.id left join public.pacientes p on c.fk_paciente_id = p.id where d.fk_doctor_id = $1",
-    [doctorId]
+    `select * from citas_medicas where id_paciente = $1`,
+    [patientId]
   );
 };
 
-const getPatientsAppointments = async (patientId) => {
-  return await pool.query(
-    "select d.fecha,d.hora_inicio,d.hora_fin,c.fecha_agendada,c.fk_especialidad_id as id_especialidad, e.nom as nombre_especialidad,ec.nombre as estado,p.id as id_paciente, p.rut as rut_paciente, CONCAT(p.nom,' ',p.ap_paterno,' ',p.ap_materno) AS nombre_paciente from disponibilidad d left join citas c on d.id = c.fk_disponibilidad_id left join estados_cita ec on c.fk_estado_cita_id = ec.id left join especialidad e on c.fk_especialidad_id = e.id left join public.pacientes p on c.fk_paciente_id = p.id where c.fk_paciente_id = $1",
-    [patientId]
-  );
+// const getSpecialityAppointmentsP = async (specialityId) => {
+//   return await pool.query(
+//     `select * from citas_medicas where id_paciente is null and id_especialidad = $1`,
+//     [specialityId]
+//   );
+// };
+// const getDateAppointmentsP = async (date) => {
+//   return await pool.query(`select * from citas_medicas cm where id_paciente is null and fecha = $1`, [
+//     date,
+//   ]);
+// };
+// const getDoctorAppointmentsP = async (doctorId) => {
+//   return await pool.query(`select * from citas_medicas where id_paciente is null and id_doctor = $1`, [
+//     doctorId,
+//   ]);
+// };
+const getFilteredAppointments = async (filters) => {
+  let queryConditions = [];
+  let queryParams = [];
+  let paramCounter = 1;
+  
+  // Construir condiciones de búsqueda dinámicamente
+  if (filters.specialityId) {
+    queryConditions.push(`id_especialidad = $${paramCounter}`);
+    queryParams.push(filters.specialityId);
+    paramCounter++;
+  }
+  
+  if (filters.date) {
+    queryConditions.push(`fecha = $${paramCounter}`);
+    queryParams.push(filters.date);
+    paramCounter++;
+  }
+  
+  if (filters.doctorId) {
+    queryConditions.push(`id_doctor = $${paramCounter}`);
+    queryParams.push(filters.doctorId);
+    paramCounter++;
+  }
+  
+  // Construir la consulta base
+  let query = 'SELECT * FROM citas_medicas';
+  
+  // Agregar condiciones WHERE si existen filtros
+  if (queryConditions.length > 0) {
+    query += ` WHERE ${queryConditions.join(' AND ')}`;
+  }
+  
+  // Agregar ORDER BY fecha para ordenar los resultados
+  query += ' AND id_paciente IS NULL ORDER BY fecha';
+  
+  return await pool.query(query, queryParams);
 };
 
 const generateDoctorAppointments = async (req, res) => {
@@ -32,4 +84,8 @@ module.exports = {
   getDoctorAppointments,
   getPatientsAppointments,
   generateDoctorAppointments,
+  getFilteredAppointments,
+  // getSpecialityAppointmentsP,
+  // getDateAppointmentsP,
+  // getDoctorAppointmentsP,
 };

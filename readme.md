@@ -137,6 +137,7 @@
   }
 }
 ```
+
 ### Eliminar un usuario
 
 - **Método:** DELETE
@@ -165,9 +166,6 @@
   }
 }
 ```
-
-
-
 
 ## PACIENTES
 
@@ -213,16 +211,30 @@
 ### Obtener citas de un doctor
 
 - **Método:** GET
-- **Ruta:** api/doctors/appointments.
+- **Ruta:** api/appointments/doctors.
 - **Respuesta:** Todas las citas médicas de un doctor. Independientemente si un paciente la tomó.
 - **Parámetros:** Auth Bearer Token.
 
 ### Obtener citas de un paciente
 
 - **Método:** GET
-- **Ruta:** api/patients/appointments.
+- **Ruta:** api/appointments/patients.
 - **Respuesta:** Todas las citas médicas de un paciente.
 - **Parámetros:** Auth Bearer Token.
+
+### Obtener citas médicas
+
+- **Método:** PUT
+- **Ruta:** api/appointments/search
+- **Respuesta:** Citas médicas disponibles.
+- **Parámetros:** 
+  - ?speciality=(:id)&doctor=(:id)&date=(fecha).
+  - Auth Bearer Token.
+- **EJEMPLOS DE USO:**
+  - ?speciality=1
+  - ?doctor=1
+  - ?date=2024-09-11
+  - ?doctor=1&speciality=1
 
 ## DOCTORES
 

@@ -17,9 +17,18 @@ const authMiddleware = (req, res, next) => {
   }
 
   jwt.verify(token, config.jwtSecret, (err, decoded) => {
+    // Error if the token is expired
+    if (err && err.name === "TokenExpiredError") {
+      return res.status(401).send({
+        status: "error",
+        message: "Token expired!",
+      });
+    }
     if (err) {
       console.error("JWT verification error:", err);
-      return res.status(401).send({ status: "error", message: "Unauthorized!" });
+      return res
+        .status(401)
+        .send({ status: "error", message: "Unauthorized!" });
     }
     req.userId = decoded.id;
     req.userRole = decoded.role;

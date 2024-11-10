@@ -3,6 +3,10 @@ const {
   getAppointmentsByDoctor,
   getAppointmentsByPatient,
   generateAppointments,
+  getFilteredAppointmentsController,
+  // getAppointmentsBySpecialityId,
+  // getAppointmentsByDate,
+  // getAppointmentsByDoctorId,
 } = require("../controllers/appointments.controller.js");
 const { authMiddleware } = require("../middleware/auth.middleware.js");
 const { methodNotAllowed } = require("../middleware/errors.middleware.js");
@@ -16,6 +20,10 @@ router
 router
   .route("/patient")
   .get(authMiddleware, getAppointmentsByPatient)
+  .all(methodNotAllowed(["GET"]));
+router
+  .route("/search")
+  .get(authMiddleware, getFilteredAppointmentsController)
   .all(methodNotAllowed(["GET"]));
 
 router
