@@ -9,6 +9,11 @@ const getOne = async (req, res, next) => {
     req.params.id,
   ]);
 };
+const getAllObservations = async (req, res, next) => {
+  return await pool.query("select cm.id_cita, cm.fecha, o.observacion from citas_medicas cm join observaciones o on cm.id_cita = o.fk_cita_id where id_paciente = $1", [
+    req.params.id,
+  ]);
+};
 const create = async (patient) => {
   // Encrypt the password
   const hashedPassword = await encryptPassword(patient.password);
@@ -54,4 +59,4 @@ const create = async (patient) => {
   return { id, rut, email, full, role: "paciente" };
 };
 
-module.exports = { getAll, getOne, create };
+module.exports = { getAll, getOne,getAllObservations, create };

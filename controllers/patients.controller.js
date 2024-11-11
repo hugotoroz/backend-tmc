@@ -1,4 +1,4 @@
-const { getAll, getOne, create } = require("../models/patients.models");
+const { getAll, getOne,getAllObservations, create } = require("../models/patients.models");
 const { generateToken } = require("../config/auth");
 const { asyncHandler, AppError } = require("../middleware/errors.middleware");
 
