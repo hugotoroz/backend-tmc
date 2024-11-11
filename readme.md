@@ -222,12 +222,12 @@
 - **Respuesta:** Todas las citas médicas de un paciente.
 - **Parámetros:** Auth Bearer Token.
 
-### Obtener citas médicas
+### Obtener citas médicas disponibles
 
 - **Método:** GET
 - **Ruta:** api/appointments/search
 - **Respuesta:** Citas médicas disponibles.
-- **Parámetros:** 
+- **Parámetros:**
   - ?speciality=(:id)&doctor=(:id)&date=(fecha).
   - Auth Bearer Token.
 - **EJEMPLOS DE USO:**
@@ -235,6 +235,22 @@
   - ?doctor=1
   - ?date=2024-09-11
   - ?doctor=1&speciality=1
+
+### Registrar una cita médica (paciente)
+
+- **Método:** POST
+- **Ruta:** api/appointments/patient/create
+- **Respuesta:** Datos de la cita médica registrada
+- **Parámetros:**
+  - ID de la disponibilidad del doctor
+  - Auth Bearer Token
+- **Parámetros: (JSON)**
+
+```json
+{
+  "availabilityId": 1
+}
+```
 
 ## DOCTORES
 

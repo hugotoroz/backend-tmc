@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const config = require("../config/auth.js");
+const { ROLES } = require("../constants/users.constant");
 // function to verify the Bearer token
 const authMiddleware = (req, res, next) => {
   const authHeader = req.headers["authorization"];
@@ -31,11 +32,37 @@ const authMiddleware = (req, res, next) => {
         .send({ status: "error", message: "Unauthorized!" });
     }
     req.userId = decoded.id;
-    req.userRole = decoded.role;
+    req.userRole = decoded.roleId;
+    if (decoded.specialityId) {
+      req.specialityId = decoded.specialityId;
+    }
     next();
   });
 };
 // function to verify if the user is an admin
-const isAdminMiddleware = (req, res, next) => {};
+const isAdminMiddleware = (req, res, next) => {
+  if (parseInt(req.userRole) !== ROLES.ADMIN) {
+    return res
+      .status(403)
+      .send({ status: "error", message: "Unauthorized!" });
+  }
+  next();
+};
+const isDoctorMiddleware = (req, res, next) => {
+  if (parseInt(req.userRole) !== ROLES.DOCTOR) {
+    return res
+      .status(403)
+      .send({ status: "error", message: "Unauthorized!" });
+  }
+  next();
+};
+const isPatientMiddleware = (req, res, next) => {
+  if (parent(req.userRole) !== ROLES.PATIENT) {
+    return res
+      .status(403)
+      .send({ status: "error", message: "Unauthorized!" });
+  }
+  next();
+};
 
-module.exports = { authMiddleware, isAdminMiddleware };
+module.exports = { authMiddleware, isAdminMiddleware, isDoctorMiddleware, isPatientMiddleware };

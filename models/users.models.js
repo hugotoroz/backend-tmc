@@ -1,12 +1,13 @@
 const { pool } = require("../config/database.js");
 const { comparePassword } = require("../config/password.js");
 const { AppError } = require("../middleware/errors.middleware");
+const { ROLES } = require("../constants/users.constant");
 
 const login = async (user) => {
   try {
     // Obtain the user data from the database
     const response = await pool.query(
-      "SELECT u.*,CONCAT(u.nom,' ',u.ap_paterno,' ',u.ap_materno) AS full,r.rol FROM usuarios u JOIN usuario_rol ur ON u.id = ur.fk_usuario_id JOIN roles r ON ur.fk_rol_id = r.id WHERE u.rut = $1",
+      "SELECT u.*,CONCAT(u.nom,' ',u.ap_paterno,' ',u.ap_materno) AS full,ur.fk_rol_id as id_rol FROM usuarios u JOIN usuario_rol ur ON u.id = ur.fk_usuario_id WHERE u.rut = $1",
       [user.rut]
     );
     // Check if the user exists
@@ -18,7 +19,19 @@ const login = async (user) => {
     if (!match) {
       throw new AppError("Invalid password", 401);
     }
-    // Return the user data
+    let specialities = [];
+    // check if the rol is doctor
+    if (parseInt(response.rows[0].id_rol) === ROLES.DOCTOR) {
+      const doctorSpecialities = await pool.query(
+        "select * from doctor_especialidad de where fk_doctor_id = $1",
+        [response.rows[0].id]
+      );
+      // Save all the specialities
+      specialities = doctorSpecialities.rows.map(
+        (speciality) => speciality.fk_especialidad_id
+      );
+    }
+
     return {
       status: "success",
       data: {
@@ -26,11 +39,14 @@ const login = async (user) => {
         rut: response.rows[0].rut,
         email: response.rows[0].email,
         fullName: response.rows[0].full,
-        role: response.rows[0].rol,
+        roleId: response.rows[0].id_rol,
+        ...(specialities.length > 0 && {
+          specialityId: specialities,
+        }),
       },
     };
   } catch (error) {
-    throw AppError(error, 500);
+    throw new AppError(error, 500);
   }
 };
 

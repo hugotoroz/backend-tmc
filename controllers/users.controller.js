@@ -56,13 +56,18 @@ const userLogin = asyncHandler(async (req, res) => {
   const user = req.body;
   try {
     const result = await login(user);
+    const specialityExists = result.data.specialityId !== null;
     const token = generateToken({
       id: result.data.id,
       rut: result.data.rut,
       email: result.data.email,
       fullName: result.data.fullName,
-      role: result.data.role,
+      roleId: result.data.roleId,
+      ...(specialityExists && {
+        specialityId: result.data.specialityId,
+      }),
     });
+
     res.json({ status: "success", data: { token: token } });
   } catch (error) {
     throw new AppError(error, 500);
@@ -86,7 +91,7 @@ const updateUser = asyncHandler(async (req, res) => {
       rut: result.rut,
       email: result.email,
       fullName: result.full,
-      role: userRole,
+      roleId: userRole,
     });
 
     res.json({

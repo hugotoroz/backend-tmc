@@ -2,10 +2,8 @@ const {
   getDoctorAppointments,
   getPatientsAppointments,
   getFilteredAppointments,
-  // getDateAppointmentsP,
-  // getSpecialityAppointmentsP,
-  // getDoctorAppointmentsP,
   generateDoctorAppointments,
+  createAppointment,
 } = require("../models/appointments.models");
 const { asyncHandler, AppError } = require("../middleware/errors.middleware");
 
@@ -36,48 +34,6 @@ const getAppointmentsByPatient = asyncHandler(async (req, res) => {
     data: result.rows,
   });
 });
-
-// const getAppointmentsBySpecialityId = asyncHandler(async (req, res) => {
-//   const { specialityId } = req.params;
-//   const result = await getSpecialityAppointmentsP(specialityId);
-
-//   if (!result.rows || result.rows.length === 0) {
-//     throw new AppError("No se encontraron citas para esta especialidad", 404);
-//   }
-
-//   res.json({
-//     status: "success",
-//     data: result.rows,
-//   });
-// });
-
-// const getAppointmentsByDate = asyncHandler(async (req, res) => {
-//   const { date } = req.params;
-//   const result = await getDateAppointmentsP(date);
-
-//   if (!result.rows || result.rows.length === 0) {
-//     throw new AppError("No se encontraron citas para esta fecha", 404);
-//   }
-
-//   res.json({
-//     status: "success",
-//     data: result.rows,
-//   });
-// });
-
-// const getAppointmentsByDoctorId = asyncHandler(async (req, res) => {
-//   const { doctorId } = req.params;
-//   const result = await getDoctorAppointmentsP(doctorId);
-
-//   if (!result.rows || result.rows.length === 0) {
-//     throw new AppError("No se encontraron citas para este doctor", 404);
-//   }
-
-//   res.json({
-//     status: "success",
-//     data: result.rows,
-//   });
-// });
 const getFilteredAppointmentsController = asyncHandler(async (req, res) => {
   // Obtener filtros de query params
   const filters = {
@@ -113,6 +69,26 @@ const getFilteredAppointmentsController = asyncHandler(async (req, res) => {
     filters: filters, // Incluir los filtros utilizados en la respuesta
   });
 });
+const createPatientAppointment = asyncHandler(async (req, res) => {
+  try {
+    const { availabilityId } = req.body;
+    const patientId = req.userId;
+
+    const appointment = {
+      patientId,
+      availabilityId,
+    };
+
+    const result = await createAppointment(appointment);
+
+    res.json({
+      status: "success",
+      data: result,
+    });
+  } catch (error) {
+    throw new AppError(error, 500);
+  }
+});
 
 const generateAppointments = asyncHandler(async (req, res) => {
   const { startTime, endTime, speciality, weekdays, saturdays, sundays } =
@@ -146,7 +122,5 @@ module.exports = {
   getAppointmentsByPatient,
   generateAppointments,
   getFilteredAppointmentsController,
-  // getAppointmentsBySpecialityId,
-  // getAppointmentsByDate,
-  // getAppointmentsByDoctorId,
+  createPatientAppointment,
 };

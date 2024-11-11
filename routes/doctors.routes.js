@@ -5,7 +5,10 @@ const {
   getAllSpecialities,
   createDoctor,
 } = require("../controllers/doctors.controller.js");
-const { authMiddleware } = require("../middleware/auth.middleware.js");
+const {
+  authMiddleware,
+  isAdminMiddleware,
+} = require("../middleware/auth.middleware.js");
 const { methodNotAllowed } = require("../middleware/errors.middleware.js");
 const router = Router();
 
@@ -15,12 +18,12 @@ router
   .all(methodNotAllowed(["GET"]));
 router
   .route("/")
-  .get(authMiddleware, getAllDoctors)
+  .get(authMiddleware, isAdminMiddleware, getAllDoctors)
   .post(createDoctor)
   .all(methodNotAllowed(["GET"], ["POST"]));
 router
   .route("/:id")
-  .get(authMiddleware, getDoctorById)
+  .get(authMiddleware, isAdminMiddleware, getDoctorById)
   .all(methodNotAllowed(["GET"]));
 
 module.exports = { doctorsRouter: router };

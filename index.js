@@ -5,7 +5,10 @@ const { patientsRouter } = require("./routes/patients.routes.js");
 const { doctorsRouter } = require("./routes/doctors.routes.js");
 const { usersRouter } = require("./routes/users.routes.js");
 const { appointmentsRouter } = require("./routes/appointments.routes.js");
-const { globalErrorHandler, notFound } = require("./middleware/errors.middleware.js");
+const {
+  globalErrorHandler,
+  notFound,
+} = require("./middleware/errors.middleware.js");
 
 const app = express();
 
@@ -15,16 +18,16 @@ app.use(express.json());
 app.use(cors());
 
 // Routes
-app.use('/api/patients', patientsRouter);
-app.use('/api/user', usersRouter);
-app.use('/api/doctors', doctorsRouter);
-app.use('/api/appointments', appointmentsRouter);
+app.use("/api/patients", patientsRouter);
+app.use("/api/user", usersRouter);
+app.use("/api/doctors", doctorsRouter);
+app.use("/api/appointments", appointmentsRouter);
 
 // Health check
-app.get("/", (req, res) => {
-  res.json({ 
-    status: "success", 
-    data: "Typical Medical Center's API is running!" 
+app.get("/api", (req, res) => {
+  res.json({
+    status: "success",
+    data: "Typical Medical Center's API is running!",
   });
 });
 
