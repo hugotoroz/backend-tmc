@@ -1,7 +1,11 @@
-const { getAll, getOne,getAllObservations, create } = require("../models/patients.models");
+const {
+  getAll,
+  getOne,
+  getAllObservations,
+  create,
+} = require("../models/patients.models");
 const { generateToken } = require("../config/auth");
 const { asyncHandler, AppError } = require("../middleware/errors.middleware");
-
 
 const getAllPatients = asyncHandler(async (req, res) => {
   try {
@@ -17,6 +21,15 @@ const getPatientById = asyncHandler(async (req, res) => {
     res.json(result.rows);
   } catch (error) {
     throw new AppError("Error al obtener paciente", 500);
+  }
+});
+
+const getPatientObservations = asyncHandler(async (req, res) => {
+  try {
+    const result = await getAllObservations(req);
+    res.json(result.rows);
+  } catch (error) {
+    throw new AppError("Error al obtener observaciones. " + error, 500);
   }
 });
 
@@ -38,10 +51,9 @@ const createPatient = asyncHandler(async (req, res) => {
   }
 });
 
-
-
 module.exports = {
   getAllPatients,
   getPatientById,
+  getPatientObservations,
   createPatient,
 };

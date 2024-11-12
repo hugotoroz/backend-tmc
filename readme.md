@@ -20,7 +20,7 @@
 
 ### Obtener datos de una persona
 
-- **Método:** GET
+- **Método:** POST
 - **Ruta:** api/user/data
 - **Respuesta:** Datos de una persona.
 
@@ -181,7 +181,18 @@
 - **Método:** GET
 - **Ruta:** api/patients/:id
 - **Respuesta:** Datos de un paciente
-- **Parámetros:** Auth Bearer Token.
+- **Parámetros:** 
+  - Auth Bearer Token.
+  - id del paciente
+
+### Obtener las observaciones y documentos de un pacientes
+
+- **Método:** GET
+- **Ruta:** api/patients/:id/observations
+- **Respuesta:** Datos de un paciente
+- **Parámetros:** 
+  - Auth Bearer Token.
+  - id del paciente.
 
 ### Crear paciente
 
@@ -205,6 +216,7 @@
 ```
 
 - **Respuesta:** Bearer Token para manejo de sesiones y acceso a otros Endpoints.
+
 
 ## CITAS MÉDICAS
 
