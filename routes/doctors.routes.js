@@ -18,7 +18,7 @@ router
   .all(methodNotAllowed(["GET"]));
 router
   .route("/")
-  .get(authMiddleware, isAdminMiddleware, getAllDoctors)
+  .get(authMiddleware, getAllDoctors)
   .post(createDoctor)
   .all(methodNotAllowed(["GET"], ["POST"]));
 router
