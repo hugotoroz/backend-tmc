@@ -22,17 +22,21 @@ const getAppointmentsByDoctor = asyncHandler(async (req, res) => {
 });
 
 const getAppointmentsByPatient = asyncHandler(async (req, res) => {
-  const userId = req.userId;
-  const result = await getPatientsAppointments(userId);
+  try {
+    const userId = req.userId;
+    const result = await getPatientsAppointments(userId);
 
-  if (!result.rows || result.rows.length === 0) {
-    throw new AppError("No se encontraron citas para este paciente", 404);
+    if (!result.rows || result.rows.length === 0) {
+      throw new AppError("No se encontraron citas para este paciente", 404);
+    }
+
+    res.json({
+      status: "success",
+      data: result.rows,
+    });
+  } catch (error) {
+    throw new AppError(error, 500);
   }
-
-  res.json({
-    status: "success",
-    data: result.rows,
-  });
 });
 const getFilteredAppointmentsController = asyncHandler(async (req, res) => {
   // Obtener filtros de query params

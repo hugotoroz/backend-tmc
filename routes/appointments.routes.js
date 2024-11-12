@@ -5,7 +5,6 @@ const {
   generateAppointments,
   getFilteredAppointmentsController,
   createPatientAppointment,
-  
 } = require("../controllers/appointments.controller.js");
 const {
   authMiddleware,
@@ -16,8 +15,8 @@ const { methodNotAllowed } = require("../middleware/errors.middleware.js");
 const router = Router();
 
 router
-  .route("/doctor")
-  .get(authMiddleware, isDoctorMiddleware, getAppointmentsByDoctor)
+  .route("/search")
+  .get(authMiddleware, getFilteredAppointmentsController)
   .all(methodNotAllowed(["GET"]));
 
 router
@@ -25,13 +24,14 @@ router
   .get(authMiddleware, isPatientMiddleware, getAppointmentsByPatient)
   .all(methodNotAllowed(["GET"]));
 router
-  .route("/search")
-  .get(authMiddleware, getFilteredAppointmentsController)
-  .all(methodNotAllowed(["GET"]));
-router
   .route("/patient/create")
-  .post(authMiddleware, createPatientAppointment)
+  .post(authMiddleware, isPatientMiddleware, createPatientAppointment)
   .all(methodNotAllowed(["POST"]));
+
+router
+  .route("/doctor")
+  .get(authMiddleware, isDoctorMiddleware, getAppointmentsByDoctor)
+  .all(methodNotAllowed(["GET"]));
 router
   .route("/doctor/generate")
   .post(authMiddleware, isDoctorMiddleware, generateAppointments)
