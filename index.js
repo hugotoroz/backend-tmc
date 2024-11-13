@@ -5,6 +5,7 @@ const { patientsRouter } = require("./routes/patients.routes.js");
 const { doctorsRouter } = require("./routes/doctors.routes.js");
 const { usersRouter } = require("./routes/users.routes.js");
 const { appointmentsRouter } = require("./routes/appointments.routes.js");
+const { documentsRouter } = require("./routes/documents.routes.js");
 const {
   globalErrorHandler,
   notFound,
@@ -22,6 +23,7 @@ app.use("/api/patients", patientsRouter);
 app.use("/api/user", usersRouter);
 app.use("/api/doctors", doctorsRouter);
 app.use("/api/appointments", appointmentsRouter);
+app.use("/api/documents", documentsRouter);
 
 // Health check
 app.get("/api", (req, res) => {
