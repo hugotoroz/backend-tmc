@@ -181,7 +181,7 @@
 - **Método:** GET
 - **Ruta:** api/patients/:id
 - **Respuesta:** Datos de un paciente
-- **Parámetros:** 
+- **Parámetros:**
   - Auth Bearer Token.
   - id del paciente
 
@@ -190,7 +190,7 @@
 - **Método:** GET
 - **Ruta:** api/patients/:id/observations
 - **Respuesta:** Datos de un paciente
-- **Parámetros:** 
+- **Parámetros:**
   - Auth Bearer Token.
   - id del paciente.
 
@@ -217,6 +217,14 @@
 
 - **Respuesta:** Bearer Token para manejo de sesiones y acceso a otros Endpoints.
 
+## DOCUMENTOS
+
+### Obtener los tipos de documentos
+
+- **Método:** GET
+- **Ruta:** api/documents/types
+- **Parámetros:** Auth Bearer Token.
+- **Respuesta:** Lista de los tipos de documentos.
 
 ## CITAS MÉDICAS
 

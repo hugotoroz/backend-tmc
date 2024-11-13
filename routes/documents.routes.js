@@ -6,7 +6,7 @@ const router = Router();
 
 router
     .route("/types")
-    .get( getDocumentsType)
+    .get(authMiddleware, getDocumentsType)
     .all(methodNotAllowed(["GET"]));
 
 module.exports = { documentsRouter: router };
