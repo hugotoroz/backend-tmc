@@ -217,6 +217,20 @@
 
 - **Respuesta:** Bearer Token para manejo de sesiones y acceso a otros Endpoints.
 
+### Obtener los documentos del paciente
+
+- **Método:** GET
+- **Ruta:** api/patients/myDocuments/search
+- **Parámetros:**
+  - ?specialityId=(:id)&documentTypeId=(:id)&date=(fecha).
+  - Auth Bearer Token.
+- **Respuesta:** Lista de los documentos de un paciente.
+- **EJEMPLOS DE USO:**
+  - ?specialityId=1
+  - ?documentTypeId=1
+  - ?date=2024-11-14
+  - ?documentTypeId=1&specialityId=1
+
 ## DOCUMENTOS
 
 ### Obtener los tipos de documentos
@@ -288,10 +302,17 @@
 - **Respuesta:** Datos de un paciente
 - **Parámetros:** Auth Bearer Token.
 
-### Obtener especialidades de un doctor
+### Obtener TODAS las especialidades de un doctor
 
 - **Método:** GET
 - **Ruta:** api/doctors/specialities.
+- **Respuesta:** Especialidades de un doctor.
+- **Parámetros:** Auth Bearer Token.
+
+### Obtener las especialidades de un doctor
+
+- **Método:** GET
+- **Ruta:** api/doctors/Myspecialities.
 - **Respuesta:** Especialidades de un doctor.
 - **Parámetros:** Auth Bearer Token.
 

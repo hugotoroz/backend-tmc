@@ -57,7 +57,7 @@ const isDoctorMiddleware = (req, res, next) => {
   next();
 };
 const isPatientMiddleware = (req, res, next) => {
-  if (parseInt(req.userRole) !== ROLES.PATIENT) {
+  if (req.userRole !== ROLES.PATIENT) {
     return res
       .status(403)
       .send({ status: "error", message: "Unauthorized!" });

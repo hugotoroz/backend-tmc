@@ -63,6 +63,8 @@ const userLogin = asyncHandler(async (req, res) => {
       email: result.data.email,
       fullName: result.data.fullName,
       roleId: result.data.roleId,
+      cellphone: result.data.cellphone,
+      dateBirth: result.data.dateBirth,
       ...(specialityExists && {
         specialityId: result.data.specialityId,
       }),
@@ -70,7 +72,7 @@ const userLogin = asyncHandler(async (req, res) => {
 
     res.json({ status: "success", data: { token: token } });
   } catch (error) {
-    throw new AppError(error, 500);
+    throw new AppError(error, error.statusCode);
   }
 });
 

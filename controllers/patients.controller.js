@@ -2,6 +2,7 @@ const {
   getAll,
   getOne,
   getAllObservations,
+  getAllDocuments,
   create,
 } = require("../models/patients.models");
 const { generateToken } = require("../config/auth");
@@ -29,7 +30,24 @@ const getPatientObservations = asyncHandler(async (req, res) => {
     const result = await getAllObservations(req);
     res.json(result.rows);
   } catch (error) {
-    throw new AppError("Error al obtener observaciones. " + error, 500);
+    throw new AppError(error, error.statusCode);
+  }
+});
+
+const getAllPatientsDocuments = asyncHandler(async (req, res) => {
+  const userId = req.userId;
+
+  const filters = {
+    fecha: req.query.date,
+    id_tipo_documento: req.query.documentTypeId,
+    id_especialidad: req.query.specialityId,
+  };
+
+  try {
+    const result = await getAllDocuments(userId, filters);
+    res.json(result.rows);
+  } catch (error) {
+    throw new AppError(error, error.statusCode);
   }
 });
 
@@ -43,11 +61,13 @@ const createPatient = asyncHandler(async (req, res) => {
       rut: result.rut,
       email: result.email,
       fullName: result.full,
-      role: result.role,
+      roleId: result.roleId,
+      cellphone: result.telefono,
+      dateBirth: result.fec_nacimiento,
     });
     res.json({ status: "success", data: { token: token } });
   } catch (error) {
-    throw new AppError("Error crear el paciente:" + error, 500);
+    throw new AppError(error, error.statusCode);
   }
 });
 
@@ -55,5 +75,6 @@ module.exports = {
   getAllPatients,
   getPatientById,
   getPatientObservations,
+  getAllPatientsDocuments,
   createPatient,
 };

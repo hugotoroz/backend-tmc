@@ -7,17 +7,17 @@ const login = async (user) => {
   try {
     // Obtain the user data from the database
     const response = await pool.query(
-      "SELECT u.*,CONCAT(u.nom,' ',u.ap_paterno,' ',u.ap_materno) AS full,ur.fk_rol_id as id_rol FROM usuarios u JOIN usuario_rol ur ON u.id = ur.fk_usuario_id WHERE u.rut = $1",
+      "SELECT u.*,CONCAT(u.nom,' ',u.ap_paterno,' ',u.ap_materno) AS full,ur.fk_rol_id as id_rol, u.telefono, u.fec_nacimiento FROM usuarios u JOIN usuario_rol ur ON u.id = ur.fk_usuario_id WHERE u.rut = $1",
       [user.rut]
     );
     // Check if the user exists
     if (response.rowCount === 0) {
-      throw new AppError("User not found", 404);
+      throw new AppError("Usuario no encontrado", 404);
     }
     // Check if the password is correct
     const match = await comparePassword(user.password, response.rows[0].clave);
     if (!match) {
-      throw new AppError("Invalid password", 401);
+      throw new AppError("Contraseña inválida", 401);
     }
     let specialities = [];
     // check if the rol is doctor
@@ -39,14 +39,16 @@ const login = async (user) => {
         rut: response.rows[0].rut,
         email: response.rows[0].email,
         fullName: response.rows[0].full,
-        roleId: response.rows[0].id_rol,
+        roleId: parseInt(response.rows[0].id_rol),
+        cellphone: response.rows[0].telefono,
+        dateBirth: response.rows[0].fec_nacimiento,
         ...(specialities.length > 0 && {
           specialityId: specialities,
         }),
       },
     };
   } catch (error) {
-    throw new AppError(error, 500);
+    throw new AppError(error, error.statusCode);
   }
 };
 

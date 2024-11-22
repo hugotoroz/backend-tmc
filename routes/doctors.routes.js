@@ -3,6 +3,7 @@ const {
   getAllDoctors,
   getDoctorById,
   getAllSpecialities,
+  getDoctorSpecialities,
   createDoctor,
 } = require("../controllers/doctors.controller.js");
 const {
@@ -15,6 +16,10 @@ const router = Router();
 router
   .route("/specialities")
   .get(getAllSpecialities)
+  .all(methodNotAllowed(["GET"]));
+router
+  .route("/Myspecialities/")
+  .get(authMiddleware, getDoctorSpecialities)
   .all(methodNotAllowed(["GET"]));
 router
   .route("/")

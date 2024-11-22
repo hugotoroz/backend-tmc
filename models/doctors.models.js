@@ -7,6 +7,11 @@ const getAll = async (req, res, next) => {
 const getSpecialities = async (req, res, next) => {
   return await pool.query("SELECT * FROM especialidad");
 };
+const getAllDoctorSpecialities = async (specialities) => {
+  return await pool.query(
+    `SELECT * FROM especialidad WHERE id IN (${specialities.join(",")})`
+  );
+};
 const getOne = async (req, res, next) => {
   return await pool.query("SELECT * FROM usuarios WHERE id = $1", [
     req.params.id,
@@ -76,4 +81,4 @@ const create = async (doctor) => {
   }
 };
 
-module.exports = { getAll, getOne, getSpecialities, create };
+module.exports = { getAll, getOne, getSpecialities,getAllDoctorSpecialities, create };

@@ -38,6 +38,7 @@ const getAppointmentsByPatient = asyncHandler(async (req, res) => {
     throw new AppError(error, 500);
   }
 });
+
 const getFilteredAppointmentsController = asyncHandler(async (req, res) => {
   // Obtener filtros de query params
   const filters = {
@@ -119,6 +120,10 @@ const generateAppointments = asyncHandler(async (req, res) => {
     status: "success",
     data: result.rows,
   });
+});
+// Generate doctor's hours
+const createDoctorsHours = asyncHandler(async (req, res) => {
+
 });
 
 module.exports = {

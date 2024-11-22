@@ -3,12 +3,14 @@ const {
   getAllPatients,
   getPatientById,
   getPatientObservations,
+  getAllPatientsDocuments,
   createPatient,
 } = require("../controllers/patients.controller.js");
 const {
   authMiddleware,
   isAdminMiddleware,
   isDoctorMiddleware,
+  isPatientMiddleware,
 
 } = require("../middleware/auth.middleware.js");
 const { methodNotAllowed } = require("../middleware/errors.middleware.js");
@@ -26,6 +28,10 @@ router
 router
   .route("/:id/observations")
   .get(authMiddleware, isDoctorMiddleware, getPatientObservations)
+  .all(methodNotAllowed(["GET"]));
+router
+  .route("/myDocuments/search")
+  .get(authMiddleware, isPatientMiddleware, getAllPatientsDocuments)
   .all(methodNotAllowed(["GET"]));
 
 module.exports = { patientsRouter: router };

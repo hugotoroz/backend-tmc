@@ -2,6 +2,7 @@ const {
   getAll,
   getOne,
   getSpecialities,
+  getAllDoctorSpecialities,
   create,
 } = require("../models/doctors.models");
 const { asyncHandler, AppError } = require("../middleware/errors.middleware");
@@ -17,6 +18,16 @@ const getAllDoctors = asyncHandler(async (req, res) => {
 const getAllSpecialities = asyncHandler(async (req, res) => {
   try {
     const result = await getSpecialities();
+    res.json(result.rows);
+  } catch (error) {
+    throw new AppError("Error al obtener especialidades" + error, 500);
+  }
+});
+const getDoctorSpecialities = asyncHandler(async (req, res) => {
+  // ParseInt for each speciality
+  const specialities = req.specialityId.map((speciality) => parseInt(speciality));
+  try {
+    const result = await getAllDoctorSpecialities(specialities);
     res.json(result.rows);
   } catch (error) {
     throw new AppError("Error al obtener especialidades" + error, 500);
@@ -45,5 +56,6 @@ module.exports = {
   getAllDoctors,
   getDoctorById,
   getAllSpecialities,
+  getDoctorSpecialities,
   createDoctor,
 };
