@@ -4,8 +4,10 @@ const {
   getFilteredAppointments,
   generateDoctorAppointments,
   createAppointment,
+  finishAppointment,
 } = require("../models/appointments.models");
 const { asyncHandler, AppError } = require("../middleware/errors.middleware");
+const { uploadFiles } = require("./documents.controller");
 
 const getAppointmentsByDoctor = asyncHandler(async (req, res) => {
   const userId = req.userId;
@@ -94,6 +96,21 @@ const createPatientAppointment = asyncHandler(async (req, res) => {
     throw new AppError(error, 500);
   }
 });
+const finishPatientAppointment = asyncHandler(async (req, res) => {
+  const appointment = req.body;
+  try {
+    const fileUrl = await uploadFiles(req.file);
+
+    const result = await finishAppointment(appointment, fileUrl);
+
+    res.json({
+      status: "success",
+      data: result,
+    });
+  } catch (error) {
+    throw new AppError(error, error.statusCode);
+  }
+});
 
 const generateAppointments = asyncHandler(async (req, res) => {
   const { startTime, endTime, speciality, weekdays, saturdays, sundays } =
@@ -122,9 +139,7 @@ const generateAppointments = asyncHandler(async (req, res) => {
   });
 });
 // Generate doctor's hours
-const createDoctorsHours = asyncHandler(async (req, res) => {
-
-});
+const createDoctorsHours = asyncHandler(async (req, res) => {});
 
 module.exports = {
   getAppointmentsByDoctor,
@@ -132,4 +147,5 @@ module.exports = {
   generateAppointments,
   getFilteredAppointmentsController,
   createPatientAppointment,
+  finishPatientAppointment,
 };

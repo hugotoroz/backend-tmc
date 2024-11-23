@@ -99,7 +99,7 @@ const createAppointment = async (appointment) => {
         patientId,
         availabilityId,
         specialityId,
-        APPOINTMENTS_STATUS.PENDING,
+        APPOINTMENTS_STATUS.CONFIRMED,
       ]
     );
 
@@ -143,6 +143,45 @@ const createAppointment = async (appointment) => {
     throw new AppError(error.message, 500);
   }
 };
+const finishAppointment = async (appointment, url) => {
+  try {
+    // 1. Verificar que la cita existe
+    const getAppointment = await pool.query(
+      `SELECT * FROM citas WHERE id = $1`,
+      [appointment.appointmentId]
+    );
+
+    if (!getAppointment.rows || getAppointment.rows.length === 0) {
+      throw new AppError("La cita especificada no existe", 404);
+    }
+
+    // 2. Actualizar el estado de la cita
+    const update = await pool.query(
+      `UPDATE citas SET fk_estado_cita_id = $1 WHERE id = $2 RETURNING id`,
+      [APPOINTMENTS_STATUS.COMPLETED, appointment.appointmentId]
+    );
+
+    // Validación de actualización
+    if (!update.rows || update.rows.length === 0) {
+      throw new AppError("Error al finalizar la cita", 500);
+    }
+
+    // Añadir las observaciones de la cita
+    const addObservations = await pool.query(
+      `INSERT INTO observaciones (observacion, fk_cita_id) VALUES ($1, $2) RETURNING id, fk_cita_id, observacion`,
+      [url, appointment.appointmentId]
+    );
+
+    // Validación de inserción de observaciones
+    if (!addObservations.rows || addObservations.rows.length === 0) {
+      throw new AppError("Error al añadir las observaciones de la cita", 500);
+    }
+    return addObservations.rows[0];
+  } catch (error) {
+    throw new AppError(error.message, 500);
+  }
+};
+
 
 const generateDoctorAppointments = async (req, res) => {
   const { startTime, endTime, speciality, weekdays, saturdays, sundays } =
@@ -164,4 +203,5 @@ module.exports = {
   generateDoctorAppointments,
   getFilteredAppointments,
   createAppointment,
+  finishAppointment,
 };

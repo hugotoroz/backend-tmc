@@ -85,7 +85,7 @@ const update = async (userId, updateData) => {
 
   // Add WHERE and RETURNING
   updateQuery += ` WHERE id = $${paramCount} 
-    RETURNING id, rut, email, CONCAT(nom, ' ', ap_paterno, ' ', ap_materno) AS full`;
+    RETURNING id, rut, email, CONCAT(nom, ' ', ap_paterno, ' ', ap_materno) AS full, telefono, fec_nacimiento`;
   values.push(userId);
 
   // Execute the query
@@ -95,13 +95,15 @@ const update = async (userId, updateData) => {
     throw new Error("Usuario no encontrado");
   }
 
-  const { id, rut, email, full } = result.rows[0];
+  const { id, rut, email, full, telefono, fec_nacimiento } = result.rows[0];
 
   return {
     id,
     rut,
     email,
     full,
+    telefono,
+    fec_nacimiento,
   };
 };
 

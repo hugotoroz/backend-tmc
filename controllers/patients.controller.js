@@ -4,9 +4,11 @@ const {
   getAllObservations,
   getAllDocuments,
   create,
+  saveDocument,
 } = require("../models/patients.models");
 const { generateToken } = require("../config/auth");
 const { asyncHandler, AppError } = require("../middleware/errors.middleware");
+const { uploadFiles } = require("./documents.controller");
 
 const getAllPatients = asyncHandler(async (req, res) => {
   try {
@@ -71,10 +73,35 @@ const createPatient = asyncHandler(async (req, res) => {
   }
 });
 
+const savePatientDocument = asyncHandler(async (req, res) => {
+  const patient = req.body;
+
+  try {
+    // Subir el archivo y obtener la URL
+    const fileUrl = await uploadFiles(req.file);
+    // Guardar en la base de datos
+    const saveDocumentResult = await saveDocument(
+      patient,
+      fileUrl // Pasamos la URL obtenida
+    );
+    res.status(200).json({
+      status: "success",
+      data: saveDocumentResult,
+    });
+  } catch (error) {
+    console.error("Error completo:", error); // Para debugging
+    throw new AppError(
+      error || "Error al procesar el documento",
+      error.statusCode || 500
+    );
+  }
+});
+
 module.exports = {
   getAllPatients,
   getPatientById,
   getPatientObservations,
   getAllPatientsDocuments,
   createPatient,
+  savePatientDocument,
 };

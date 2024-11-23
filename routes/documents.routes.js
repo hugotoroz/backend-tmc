@@ -5,9 +5,8 @@ const { methodNotAllowed } = require("../middleware/errors.middleware");
 const router = Router();
 
 router
-    .route("/types")
-    .get(authMiddleware, getDocumentsType)
-    .all(methodNotAllowed(["GET"]));
+  .route("/types")
+  .get(authMiddleware, getDocumentsType)
+  .all(methodNotAllowed(["GET"]));
 
 module.exports = { documentsRouter: router };
-

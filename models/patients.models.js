@@ -230,10 +230,26 @@ const create = async (patient) => {
   }
 };
 
+const saveDocument = async (patient, url) => {
+  try {
+    const {appointmentId, documentTypeId} = patient;
+    const insertDocument = await pool.query(
+      "INSERT INTO documentos (fk_cita_id, fk_tipo_documento_id, src) VALUES ($1, $2, $3) RETURNING fk_cita_id, fk_tipo_documento_id, src",
+      [appointmentId, documentTypeId, url]
+    );
+    return insertDocument.rows[0];
+  } catch (error) {
+    throw new AppError(error.message, error.statusCode);
+  }
+};
+
+
+
 module.exports = {
   getAll,
   getOne,
   getAllObservations,
   getAllDocuments,
   create,
+  saveDocument,
 };

@@ -231,6 +231,17 @@
   - ?date=2024-11-14
   - ?documentTypeId=1&specialityId=1
 
+### Guardar los documentos de un paciente
+
+- **Método:** GET
+- **Ruta:** api/patients/document/save
+- **Respuesta:** Id de la cita, ID tipo de documento y la URL.
+- **Parámetros:**
+  - Auth Bearer Token.
+  - document (form-data) (PDF)
+  - appointmentId (form-data)
+  - documentTypeId (form-data)
+
 ## DOCUMENTOS
 
 ### Obtener los tipos de documentos
@@ -285,6 +296,16 @@
   "availabilityId": 1
 }
 ```
+
+### Guardar la observación de un paciente y finalizar la cita.
+
+- **Método:** GET
+- **Ruta:** api/appointments/finish
+- **Respuesta:** Id de la cita y la URL.
+- **Parámetros:**
+  - Auth Bearer Token.
+  - document (form-data) (PDF)
+  - appointmentId (form-data)
 
 ## DOCTORES
 

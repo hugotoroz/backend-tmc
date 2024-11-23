@@ -79,7 +79,7 @@ const userLogin = asyncHandler(async (req, res) => {
 const updateUser = asyncHandler(async (req, res) => {
   // The user ID and the Role now comes from the JWT token through the middleware
   const userId = req.userId;
-  const userRole = req.userRole;
+  const userRole = parseInt(req.userRole);
 
   // Obtain the role in the JWT
   const updateData = req.body;
@@ -94,6 +94,8 @@ const updateUser = asyncHandler(async (req, res) => {
       email: result.email,
       fullName: result.full,
       roleId: userRole,
+      cellphone: result.telefono,
+      dateBirth: result.fec_nacimiento,
     });
 
     res.json({

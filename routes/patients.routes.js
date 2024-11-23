@@ -5,15 +5,16 @@ const {
   getPatientObservations,
   getAllPatientsDocuments,
   createPatient,
+  savePatientDocument,
 } = require("../controllers/patients.controller.js");
 const {
   authMiddleware,
   isAdminMiddleware,
   isDoctorMiddleware,
   isPatientMiddleware,
-
 } = require("../middleware/auth.middleware.js");
 const { methodNotAllowed } = require("../middleware/errors.middleware.js");
+const { upload } = require("../config/digitalOceanSpaces");
 const router = Router();
 
 router
@@ -33,5 +34,14 @@ router
   .route("/myDocuments/search")
   .get(authMiddleware, isPatientMiddleware, getAllPatientsDocuments)
   .all(methodNotAllowed(["GET"]));
+router
+  .route("/document/save")
+  .post(
+    authMiddleware,
+    isDoctorMiddleware,
+    upload.single("document"), // Añadir el middleware de multer aquí
+    savePatientDocument
+  )
+  .all(methodNotAllowed(["POST"]));
 
 module.exports = { patientsRouter: router };

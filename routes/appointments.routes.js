@@ -5,6 +5,7 @@ const {
   generateAppointments,
   getFilteredAppointmentsController,
   createPatientAppointment,
+  finishPatientAppointment,
 } = require("../controllers/appointments.controller.js");
 const {
   authMiddleware,
@@ -12,6 +13,7 @@ const {
   isPatientMiddleware,
 } = require("../middleware/auth.middleware.js");
 const { methodNotAllowed } = require("../middleware/errors.middleware.js");
+const { upload } = require("../config/digitalOceanSpaces");
 const router = Router();
 
 router
@@ -35,6 +37,15 @@ router
 router
   .route("/doctor/generate")
   .post(authMiddleware, isDoctorMiddleware, generateAppointments)
+  .all(methodNotAllowed(["POST"]));
+router
+  .route("/finish")
+  .post(
+    authMiddleware,
+    isDoctorMiddleware,
+    upload.single("document"),
+    finishPatientAppointment
+  )
   .all(methodNotAllowed(["POST"]));
 
 module.exports = { appointmentsRouter: router };
