@@ -104,7 +104,7 @@ const updateUser = asyncHandler(async (req, res) => {
       data: { token: token },
     });
   } catch (error) {
-    throw new AppError(error, 500);
+    throw new AppError(error, error.statusCode);
   }
 });
 

@@ -62,6 +62,18 @@ const update = async (userId, updateData) => {
   if (updates.length === 0) {
     throw new Error("No se proporcionaron campos válidos para actualizar");
   }
+  // Si viene el correo, validar que sea un correo unico
+  if (updateData.email) {
+    const emailExist = await pool.query(
+      "SELECT * FROM usuarios WHERE email = $1 AND id != $2",
+      [updateData.email, userId]
+    );
+    if (emailExist.rows.length > 0) {
+      throw new AppError("El email ya está registrado", 400);
+    }
+  }
+
+
 
   // Build the UPDATE query dynamically
   let updateQuery = "UPDATE usuarios SET ";
