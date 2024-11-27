@@ -2,7 +2,7 @@ const { pool } = require("../config/database.js");
 const { encryptPassword } = require("../config/password");
 
 const getAll = async (req, res, next) => {
-  return await pool.query("SELECT * FROM public.doctores WHERE is_active = 1");
+  return await pool.query("SELECT * FROM public.doctores WHERE is_row = 1");
 };
 const getSpecialities = async (req, res, next) => {
   return await pool.query("SELECT * FROM especialidad");
