@@ -233,7 +233,7 @@
 
 ### Guardar los documentos de un paciente
 
-- **Método:** GET
+- **Método:** POST
 - **Ruta:** api/patients/document/save
 - **Respuesta:** Id de la cita, ID tipo de documento y la URL.
 - **Parámetros:**
@@ -297,9 +297,84 @@
 }
 ```
 
+### Generar un horario de un doctor
+
+- **Método:** POST
+- **Ruta:** api/appointments/doctor/generate
+- **Respuesta:** Horario generado del doctor
+- **Parámetros:** Auth Bearer Token.
+- **Parámetros: (JSON)**
+
+```json
+{
+  "startTime": "09:00",
+  "endTime": "17:00",
+  "speciality": 1,
+  "weekdays": true,
+  "saturdays": true,
+  "sundays": true
+}
+```
+
+- **Respuesta: (JSON)**
+
+```json
+{
+  "status": "success",
+  "data": [
+    {
+      "date": "2024-11-27T03:00:00.000Z",
+      "starttime": "09:00:00",
+      "endtime": "09:30:00"
+    },
+    {
+      "date": "2024-11-27T03:00:00.000Z",
+      "starttime": "09:40:00",
+      "endtime": "10:10:00"
+    },
+    {
+      "date": "2024-11-27T03:00:00.000Z",
+      "starttime": "10:20:00",
+      "endtime": "10:50:00"
+    }
+  ]
+}
+```
+
+### Insertar en la BD el horario de un doctor
+
+- **Método:** POST
+- **Ruta:** api/appointments/doctor/create
+- **Respuesta:** ID de los horarios insertados.
+- **Parámetros:** Auth Bearer Token.
+- **Parámetros: (JSON)**
+
+```json
+{
+  "appointments": [
+    {
+      "date": "2024-11-27T03:00:00.000Z",
+      "starttime": "09:00:00",
+      "endtime": "09:30:00"
+    },
+    {
+      "date": "2024-11-27T03:00:00.000Z",
+      "starttime": "09:40:00",
+      "endtime": "10:10:00"
+    },
+    {
+      "date": "2024-11-27T03:00:00.000Z",
+      "starttime": "10:20:00",
+      "endtime": "10:50:00"
+    }
+  ],
+  "speciality": 1
+}
+```
+
 ### Guardar la observación de un paciente y finalizar la cita.
 
-- **Método:** GET
+- **Método:** POST
 - **Ruta:** api/appointments/finish
 - **Respuesta:** Id de la cita y la URL.
 - **Parámetros:**

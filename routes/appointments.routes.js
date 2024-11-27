@@ -6,6 +6,7 @@ const {
   getFilteredAppointmentsController,
   createPatientAppointment,
   finishPatientAppointment,
+  createAppointments,
 } = require("../controllers/appointments.controller.js");
 const {
   authMiddleware,
@@ -38,6 +39,11 @@ router
   .route("/doctor/generate")
   .post(authMiddleware, isDoctorMiddleware, generateAppointments)
   .all(methodNotAllowed(["POST"]));
+router
+  .route("/doctor/create")
+  .post(authMiddleware, isDoctorMiddleware, createAppointments)
+  .all(methodNotAllowed(["POST"]));
+
 router
   .route("/finish")
   .post(

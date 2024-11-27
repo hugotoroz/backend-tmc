@@ -197,6 +197,60 @@ const generateDoctorAppointments = async (req, res) => {
   );
 };
 
+const createDoctorAppointments = async (appointments, specialityId, userId) => {
+  try {
+    // Prepare the bulk insert query
+    const query = `
+      INSERT INTO disponibilidad 
+      (fecha, hora_inicio, hora_fin, fk_doctor_id, fk_especialidad_id) 
+      VALUES ($1, $2, $3, $4, $5) 
+      RETURNING id
+    `;
+
+    // Array to store results of insertions
+    const insertedAppointments = [];
+
+    // Use a transaction to ensure all inserts succeed or fail together
+    const client = await pool.connect();
+
+    try {
+      // Begin transaction
+      await client.query('BEGIN');
+
+      // Iterate through appointments and insert each one
+      for (const appointment of appointments) {
+        const { date, starttime, endtime } = appointment;
+
+        const result = await client.query(query, [
+          date,       // fecha
+          starttime,  // hora_inicio
+          endtime,    // hora_fin
+          userId,     // fk_doctor_id (using the logged-in user's ID)
+          specialityId // fk_especialidad_id
+        ]);
+
+        // Store the inserted appointment's ID
+        insertedAppointments.push(result.rows[0]);
+      }
+
+      // Commit the transaction
+      await client.query('COMMIT');
+
+      return insertedAppointments;
+    } catch (error) {
+      // Rollback the transaction in case of any error
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      // Release the client back to the pool
+      client.release();
+    }
+  } catch (error) {
+    // Throw a custom error with more context
+    throw new AppError(`Error creating doctor appointments: ${error.message}`, 500);
+  }
+};
+
 module.exports = {
   getDoctorAppointments,
   getPatientsAppointments,
@@ -204,4 +258,5 @@ module.exports = {
   getFilteredAppointments,
   createAppointment,
   finishAppointment,
+  createDoctorAppointments,
 };
