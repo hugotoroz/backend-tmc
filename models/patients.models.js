@@ -12,7 +12,7 @@ const getOne = async (req, res, next) => {
 };
 const getAllObservations = async (req, res, next) => {
   try {
-    // 1. Obtener todas las citas con sus observaciones
+    // 1. Obtener todas las citas, incluyendo las sin observaciones
     const appointments = await pool.query(
       `
       SELECT 
@@ -20,8 +20,8 @@ const getAllObservations = async (req, res, next) => {
         cm.fecha,
         o.observacion
       FROM citas_medicas cm 
-      JOIN observaciones o ON cm.id_cita = o.fk_cita_id 
-      WHERE id_paciente = $1
+      LEFT JOIN observaciones o ON cm.id_cita = o.fk_cita_id 
+      WHERE cm.id_paciente = $1
       ORDER BY cm.fecha DESC
     `,
       [req.params.id]
