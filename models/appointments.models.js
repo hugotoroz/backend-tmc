@@ -25,15 +25,7 @@ const getFilteredAppointments = async (filters) => {
   let queryParams = [];
   let paramCounter = 1;
 
-  // Validar que la fecha de filtro no sea menor a la fecha actual
-  if (filters.date) {
-    const inputDate = DateTime.fromISO(filters.date);
-    const currentDate = DateTime.now().startOf('day');
-
-    if (inputDate < currentDate) {
-      throw new Error('La fecha de filtro no puede ser menor a la fecha actual');
-    }
-  }
+  
 
   // Construir condiciones de búsqueda dinámicamente
   if (filters.specialityId) {
@@ -54,13 +46,7 @@ const getFilteredAppointments = async (filters) => {
     paramCounter++;
   }
 
-  // Obtener la hora actual
-  const currentTime = DateTime.now().toFormat('HH:mm');
-
-  // Agregar condición para filtrar por hora de inicio
-  queryConditions.push(`hora_inicio >= $${paramCounter}`);
-  queryParams.push(currentTime);
-  paramCounter++;
+  
 
   // Build the base query
   let query = "SELECT * FROM citas_medicas";
@@ -72,7 +58,7 @@ const getFilteredAppointments = async (filters) => {
 
   // Add patient is null to filter only available appointments
   // Add ORDER BY fecha to sort the results
-  query += " AND id_paciente IS NULL ORDER BY fecha, hora_inicio";
+  query += " AND id_paciente IS NULL ORDER BY fecha";
 
   return await pool.query(query, queryParams);
 };
