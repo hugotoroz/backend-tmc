@@ -1,6 +1,7 @@
 const { pool } = require("../config/database.js");
 const { encryptPassword } = require("../config/password");
 const { AppError } = require("../middleware/errors.middleware");
+const emailService = require("../config/email/email.config.js");
 
 const getAll = async (req, res, next) => {
   return await pool.query("SELECT * FROM public.pacientes WHERE is_active = 1");
@@ -140,11 +141,11 @@ const getAllDocuments = async (patientId, filters = {}) => {
       WHERE d.fk_cita_id = ANY($1::int[])
     `;
 
-    const citaIds = appointments.rows.map(app => app.id_cita);
-    
+    const citaIds = appointments.rows.map((app) => app.id_cita);
+
     // Parámetros para la consulta de documentos
     const documentQueryParams = [citaIds];
-    
+
     // Agregar filtro de tipo de documento si existe
     if (filters.id_tipo_documento) {
       documentsQuery += ` AND d.fk_tipo_documento_id = $2`;
@@ -168,7 +169,7 @@ const getAllDocuments = async (patientId, filters = {}) => {
         ...appointment,
         documents: documentsByAppointment[appointment.id_cita] || [],
       }))
-      .filter(appointment => appointment.documents.length > 0);
+      .filter((appointment) => appointment.documents.length > 0);
 
     return {
       rows: appointmentsWithDocs,
@@ -186,7 +187,7 @@ const create = async (patient) => {
     const hashedPassword = await encryptPassword(patient.password);
     // Look the RUT in the database
     const rutExist = await pool.query("SELECT * FROM usuarios WHERE rut = $1", [
-      patient.rut,
+      patient.rut.toLowerCase(),
     ]);
     if (rutExist.rows.length > 0) {
       throw new AppError("El RUT ya está registrado", 400);
@@ -194,7 +195,7 @@ const create = async (patient) => {
     // Look the email in the database
     const emailExist = await pool.query(
       "SELECT * FROM usuarios WHERE email = $1",
-      [patient.email]
+      [patient.email.toLowerCase()]
     );
     if (emailExist.rows.length > 0) {
       throw new AppError("El email ya está registrado", 400);
@@ -203,8 +204,8 @@ const create = async (patient) => {
     const insertPatient = await pool.query(
       "INSERT INTO usuarios (rut, email, clave, nom, ap_paterno, ap_materno, fec_nacimiento, telefono, genero, is_active, is_row) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, 1, 1) RETURNING id,rut, email, CONCAT(nom ,' ', ap_paterno,' ', ap_materno) AS full, telefono, fec_nacimiento",
       [
-        patient.rut,
-        patient.email,
+        patient.rut.toLowerCase(),
+        patient.email.toLowerCase(),
         hashedPassword,
         patient.name,
         patient.patSurName,
@@ -222,6 +223,10 @@ const create = async (patient) => {
       "INSERT INTO usuario_rol (fk_usuario_id, fk_rol_id) VALUES ($1, $2)",
       [id, 3]
     );
+    const json = { rut: rut, full: full, telefono: telefono, email: email };
+    console.log(json);
+    // Send the email
+    emailService.sendWelcomeEmail(json);
 
     // Return the patient data
     return { id, rut, email, full, roleId: 3, telefono, fec_nacimiento };
@@ -232,7 +237,7 @@ const create = async (patient) => {
 
 const saveDocument = async (patient, url) => {
   try {
-    const {appointmentId, documentTypeId} = patient;
+    const { appointmentId, documentTypeId } = patient;
     const insertDocument = await pool.query(
       "INSERT INTO documentos (fk_cita_id, fk_tipo_documento_id, src) VALUES ($1, $2, $3) RETURNING fk_cita_id, fk_tipo_documento_id, src",
       [appointmentId, documentTypeId, url]
@@ -242,8 +247,6 @@ const saveDocument = async (patient, url) => {
     throw new AppError(error.message, error.statusCode);
   }
 };
-
-
 
 module.exports = {
   getAll,

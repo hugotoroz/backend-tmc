@@ -8,7 +8,7 @@ const login = async (user) => {
     // Obtain the user data from the database
     const response = await pool.query(
       "SELECT u.*,CONCAT(u.nom,' ',u.ap_paterno,' ',u.ap_materno) AS full,ur.fk_rol_id as id_rol, u.telefono, u.fec_nacimiento FROM usuarios u JOIN usuario_rol ur ON u.id = ur.fk_usuario_id WHERE u.rut = $1",
-      [user.rut]
+      [user.rut.toLowerCase()]
     );
     // Check if the user exists
     if (response.rowCount === 0) {
@@ -36,8 +36,8 @@ const login = async (user) => {
       status: "success",
       data: {
         id: response.rows[0].id,
-        rut: response.rows[0].rut,
-        email: response.rows[0].email,
+        rut: response.rows[0].rut.toLowerCase(),
+        email: response.rows[0].email.toLowerCase(),
         fullName: response.rows[0].full,
         roleId: parseInt(response.rows[0].id_rol),
         cellphone: response.rows[0].telefono,
@@ -66,7 +66,7 @@ const update = async (userId, updateData) => {
   if (updateData.email) {
     const emailExist = await pool.query(
       "SELECT * FROM usuarios WHERE email = $1 AND id != $2",
-      [updateData.email, userId]
+      [updateData.email.toLowerCase(), userId]
     );
     if (emailExist.rows.length > 0) {
       throw new AppError("El email ya está registrado", 400);
@@ -82,7 +82,7 @@ const update = async (userId, updateData) => {
 
   if (updateData.email) {
     updateQuery += `email = $${paramCount}, `;
-    values.push(updateData.email);
+    values.push(updateData.email.toLowerCase());
     paramCount++;
   }
 

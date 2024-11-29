@@ -4,8 +4,6 @@ const emailService = require("../config/email/email.config.js");
 const { AppError } = require("../middleware/errors.middleware");
 
 const { formatearFecha } = require("../utils/dates.js");
-const { DateTime } = require('luxon'); // Recomiendo usar Luxon para manejo de fechas
-
 
 const getDoctorAppointments = async (doctorId) => {
   return await pool.query(`select * from citas_medicas where id_doctor = $1`, [
@@ -25,8 +23,6 @@ const getFilteredAppointments = async (filters) => {
   let queryParams = [];
   let paramCounter = 1;
 
-  
-
   // Construir condiciones de búsqueda dinámicamente
   if (filters.specialityId) {
     queryConditions.push(`id_especialidad = $${paramCounter}`);
@@ -45,9 +41,7 @@ const getFilteredAppointments = async (filters) => {
     queryParams.push(filters.doctorId);
     paramCounter++;
   }
-
   
-
   // Build the base query
   let query = "SELECT * FROM citas_medicas";
 
@@ -58,7 +52,7 @@ const getFilteredAppointments = async (filters) => {
 
   // Add patient is null to filter only available appointments
   // Add ORDER BY fecha to sort the results
-  query += " AND id_paciente IS NULL ORDER BY fecha";
+  query += " AND id_paciente IS NULL AND fecha >= CURRENT_DATE ORDER BY fecha ";
 
   return await pool.query(query, queryParams);
 };
