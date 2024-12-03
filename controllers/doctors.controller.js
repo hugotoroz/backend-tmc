@@ -4,6 +4,7 @@ const {
   getSpecialities,
   getAllDoctorSpecialities,
   create,
+  cancelAppointment,
 } = require("../models/doctors.models");
 const { asyncHandler, AppError } = require("../middleware/errors.middleware");
 
@@ -25,7 +26,9 @@ const getAllSpecialities = asyncHandler(async (req, res) => {
 });
 const getDoctorSpecialities = asyncHandler(async (req, res) => {
   // ParseInt for each speciality
-  const specialities = req.specialityId.map((speciality) => parseInt(speciality));
+  const specialities = req.specialityId.map((speciality) =>
+    parseInt(speciality)
+  );
   try {
     const result = await getAllDoctorSpecialities(specialities);
     res.json(result.rows);
@@ -52,10 +55,21 @@ const createDoctor = asyncHandler(async (req, res) => {
   }
 });
 
+const cancelDoctorAppointment = asyncHandler(async (req, res) => {
+  const appointment = req.body;
+  try {
+    const result = await cancelAppointment(appointment);
+    res.json(result);
+  } catch (error) {
+    throw new AppError(error.message, error.statusCode);
+  }
+});
+
 module.exports = {
   getAllDoctors,
   getDoctorById,
   getAllSpecialities,
   getDoctorSpecialities,
   createDoctor,
+  cancelDoctorAppointment,
 };

@@ -5,6 +5,7 @@ const {
   getAllDocuments,
   create,
   saveDocument,
+  cancelAppointment,
 } = require("../models/patients.models");
 const { generateToken } = require("../config/auth");
 const { asyncHandler, AppError } = require("../middleware/errors.middleware");
@@ -97,6 +98,16 @@ const savePatientDocument = asyncHandler(async (req, res) => {
   }
 });
 
+const cancelPatientAppointment = asyncHandler(async (req, res) => {
+  const appointment = req.body;
+  try {
+    const result = await cancelAppointment(appointment);
+    res.json(result);
+  } catch (error) {
+    throw new AppError(error.message, error.statusCode);
+  }
+});
+
 module.exports = {
   getAllPatients,
   getPatientById,
@@ -104,4 +115,5 @@ module.exports = {
   getAllPatientsDocuments,
   createPatient,
   savePatientDocument,
+  cancelPatientAppointment,
 };

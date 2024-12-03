@@ -36,15 +36,15 @@ const notFound = (req, res, next) => {
 
 const methodNotAllowed = (allowedMethods) => {
   return (req, res, next) => {
-    if (!allowedMethods.includes(req.method)) {
-      return res.status(405).json({
-        status: 'error',
-        code: 405,
-        message: `Método ${req.method} no es válido para ${req.originalUrl}`,
-        allowedMethods: allowedMethods,
-      });
+    if (allowedMethods.includes(req.method)) {
+      return next();
     }
-    next();
+    return res.status(405).json({
+      status: 'error',
+      code: 405,
+      message: `Método ${req.method} no es válido para ${req.originalUrl}`,
+      allowedMethods: allowedMethods,
+    });
   };
 };
 

@@ -6,6 +6,7 @@ const {
   getAllPatientsDocuments,
   createPatient,
   savePatientDocument,
+  cancelPatientAppointment,
 } = require("../controllers/patients.controller.js");
 const {
   authMiddleware,
@@ -18,18 +19,9 @@ const { upload } = require("../config/digitalOceanSpaces");
 const router = Router();
 
 router
-  .route("/")
-  .get(authMiddleware, isAdminMiddleware, getAllPatients)
-  .post(createPatient)
-  .all(methodNotAllowed(["GET", "POST"]));
-router
-  .route("/:id")
-  .get(authMiddleware, isAdminMiddleware, getPatientById)
-  .all(methodNotAllowed(["GET"]));
-router
-  .route("/:id/observations")
-  .get(authMiddleware, isDoctorMiddleware, getPatientObservations)
-  .all(methodNotAllowed(["GET"]));
+  .route("/cancelAppointment")
+  .put(authMiddleware, isPatientMiddleware, cancelPatientAppointment)
+  .all(methodNotAllowed(["PUT"]));
 router
   .route("/myDocuments/search")
   .get(authMiddleware, isPatientMiddleware, getAllPatientsDocuments)
@@ -43,5 +35,18 @@ router
     savePatientDocument
   )
   .all(methodNotAllowed(["POST"]));
+router
+  .route("/")
+  .get(authMiddleware, isAdminMiddleware, getAllPatients)
+  .post(createPatient)
+  .all(methodNotAllowed(["GET", "POST"]));
+router
+  .route("/:id")
+  .get(authMiddleware, isAdminMiddleware, getPatientById)
+  .all(methodNotAllowed(["GET"]));
+router
+  .route("/:id/observations")
+  .get(authMiddleware, isDoctorMiddleware, getPatientObservations)
+  .all(methodNotAllowed(["GET"]));
 
 module.exports = { patientsRouter: router };

@@ -242,6 +242,20 @@
   - appointmentId (form-data)
   - documentTypeId (form-data)
 
+### Cancelar cita
+
+- **Método:** PUT
+- **Parámetros:** Auth Bearer Token.
+- **Ruta:** api/patients/cancelAppointment
+
+* **Parámetros (JSON):**
+
+```json
+{
+  "appointmentId": 1
+}
+```
+
 ## DOCUMENTOS
 
 ### Obtener los tipos de documentos
@@ -435,4 +449,16 @@
 }
 ```
 
-- **Respuesta:** Bearer Token para manejo de sesiones y acceso a otros Endpoints.
+### Cancelar cita
+
+- **Método:** PUT
+- **Parámetros:** Auth Bearer Token.
+- **Ruta:** api/doctors/cancelAppointment
+
+* **Parámetros (JSON):**
+
+```json
+{
+  "appointmentId": 1
+}
+```

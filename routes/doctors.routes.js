@@ -5,14 +5,19 @@ const {
   getAllSpecialities,
   getDoctorSpecialities,
   createDoctor,
+  cancelDoctorAppointment,
 } = require("../controllers/doctors.controller.js");
 const {
   authMiddleware,
   isAdminMiddleware,
+  isDoctorMiddleware,
 } = require("../middleware/auth.middleware.js");
 const { methodNotAllowed } = require("../middleware/errors.middleware.js");
 const router = Router();
-
+router
+  .route("/cancelAppointment")
+  .put(authMiddleware, isDoctorMiddleware, cancelDoctorAppointment)
+  .all(methodNotAllowed(["PUT"]));
 router
   .route("/specialities")
   .get(getAllSpecialities)

@@ -1,6 +1,7 @@
 const { pool } = require("../config/database.js");
-const { encryptPassword } = require("../config/password");
 const { AppError } = require("../middleware/errors.middleware");
+const { APPOINTMENTS_STATUS } = require("../constants/users.constant");
+const { encryptPassword } = require("../config/password");
 const emailService = require("../config/email/email.config.js");
 
 const getAll = async (req, res, next) => {
@@ -248,6 +249,48 @@ const saveDocument = async (patient, url) => {
   }
 };
 
+const cancelAppointment = async (appointment) => {
+  try {
+    // Buscar la cita
+    const appointmentExist = await pool.query(
+      "SELECT * FROM citas WHERE id = $1",
+      [appointment.appointmentId]
+    );
+    // Validar que la cita exista
+    if (appointmentExist.rows.length === 0) {
+      throw new AppError("La cita no existe", 404);
+    }
+    // Obtener fk_estado_cita_id
+    const appointmentStatus = appointmentExist.rows[0].fk_estado_cita_id;
+    // Validar que la cita no haya sido cancelada por el doctor o por el paciente
+    if (
+      appointmentStatus == APPOINTMENTS_STATUS.CANCELLED_BY_DOCTOR ||
+      appointmentStatus == APPOINTMENTS_STATUS.CANCELLED_BY_PATIENT
+    ) {
+      throw new AppError("La cita ya fue cancelada", 400);
+    }
+    // Validar que una cita completada o en curso no pueda ser cancelada
+    if (
+      appointmentStatus == APPOINTMENTS_STATUS.COMPLETED ||
+      appointmentStatus == APPOINTMENTS_STATUS.IN_PROGRESS
+    ) {
+      throw new AppError(
+        "La cita no puede ser cancelada porque está completada o en progreso",
+        400
+      );
+    }
+    // Cancelar la cita
+    await pool.query(
+      "UPDATE citas SET fk_estado_cita_id = $1 WHERE id = $2",
+      [APPOINTMENTS_STATUS.CANCELLED_BY_PATIENT, appointment.appointmentId]
+    );
+
+    return { status: "success", message: "Cita cancelada exitosamente" };
+  } catch (error) {
+    throw new AppError(error.message, 500);
+  }
+};
+
 module.exports = {
   getAll,
   getOne,
@@ -255,4 +298,5 @@ module.exports = {
   getAllDocuments,
   create,
   saveDocument,
+  cancelAppointment,
 };
