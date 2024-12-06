@@ -1,5 +1,6 @@
 const { Router } = require("express");
 const {
+  getAppointmentStatus,
   getAppointmentsByDoctor,
   getAppointmentsByPatient,
   generateAppointments,
@@ -16,6 +17,11 @@ const {
 const { methodNotAllowed } = require("../middleware/errors.middleware.js");
 const { upload } = require("../config/digitalOceanSpaces");
 const router = Router();
+
+router
+  .route("/status")
+  .get(authMiddleware, getAppointmentStatus)
+  .all(methodNotAllowed(["GET"]));
 
 router
   .route("/search")

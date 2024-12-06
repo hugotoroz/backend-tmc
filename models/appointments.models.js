@@ -5,10 +5,53 @@ const { AppError } = require("../middleware/errors.middleware");
 
 const { formatearFecha } = require("../utils/dates.js");
 
-const getDoctorAppointments = async (doctorId) => {
-  return await pool.query(`select * from citas_medicas where id_doctor = $1`, [
-    doctorId,
-  ]);
+const getStatus = async (req, res, next) => {
+  return await pool.query("SELECT * FROM estados_cita");
+};
+
+const getDoctorAppointments = async (doctorId, filters = {}) => {
+  const { specialityId, date, time, statusId } = filters;
+
+  let query = `
+    SELECT * FROM citas_medicas 
+    WHERE id_doctor = $1 
+  `;
+  const values = [doctorId];
+  let paramCount = 1;
+
+  // Add current date filter by default unless a specific date is provided
+  if (!date) {
+    query += ` AND DATE(fecha) = CURRENT_DATE`;
+  }
+
+  // Apply other filters
+  if (specialityId) {
+    paramCount++;
+    query += ` AND id_especialidad = $${paramCount}`;
+    values.push(specialityId);
+  }
+
+  if (date) {
+    paramCount++;
+    query += ` AND DATE(fecha) = $${paramCount}`;
+    values.push(date);
+  }
+
+  if (time) {
+    paramCount++;
+    query += ` AND hora_inicio >= $${paramCount}`;
+    values.push(time);
+  }
+
+  if (statusId) {
+    paramCount++;
+    query += ` AND id_estado = $${paramCount}`;
+    values.push(statusId);
+  }
+
+  query += ` ORDER BY fecha, hora_inicio`;
+
+  return await pool.query(query, values);
 };
 const getPatientsAppointments = async (patientId) => {
   return await pool.query(
@@ -16,7 +59,6 @@ const getPatientsAppointments = async (patientId) => {
     [patientId]
   );
 };
-
 
 const getFilteredAppointments = async (filters) => {
   let queryConditions = [];
@@ -41,7 +83,7 @@ const getFilteredAppointments = async (filters) => {
     queryParams.push(filters.doctorId);
     paramCounter++;
   }
-  
+
   // Build the base query
   let query = "SELECT * FROM citas_medicas";
 
@@ -183,7 +225,6 @@ const finishAppointment = async (appointment, url) => {
   }
 };
 
-
 const generateDoctorAppointments = async (req, res) => {
   const { startTime, endTime, speciality, weekdays, saturdays, sundays } =
     req.body;
@@ -216,18 +257,18 @@ const createDoctorAppointments = async (appointments, specialityId, userId) => {
 
     try {
       // Begin transaction
-      await client.query('BEGIN');
+      await client.query("BEGIN");
 
       // Iterate through appointments and insert each one
       for (const appointment of appointments) {
         const { date, starttime, endtime } = appointment;
 
         const result = await client.query(query, [
-          date,       // fecha
-          starttime,  // hora_inicio
-          endtime,    // hora_fin
-          userId,     // fk_doctor_id (using the logged-in user's ID)
-          specialityId // fk_especialidad_id
+          date, // fecha
+          starttime, // hora_inicio
+          endtime, // hora_fin
+          userId, // fk_doctor_id (using the logged-in user's ID)
+          specialityId, // fk_especialidad_id
         ]);
 
         // Store the inserted appointment's ID
@@ -235,12 +276,12 @@ const createDoctorAppointments = async (appointments, specialityId, userId) => {
       }
 
       // Commit the transaction
-      await client.query('COMMIT');
+      await client.query("COMMIT");
 
       return insertedAppointments;
     } catch (error) {
       // Rollback the transaction in case of any error
-      await client.query('ROLLBACK');
+      await client.query("ROLLBACK");
       throw error;
     } finally {
       // Release the client back to the pool
@@ -248,11 +289,15 @@ const createDoctorAppointments = async (appointments, specialityId, userId) => {
     }
   } catch (error) {
     // Throw a custom error with more context
-    throw new AppError(`Error creating doctor appointments: ${error.message}`, 500);
+    throw new AppError(
+      `Error creating doctor appointments: ${error.message}`,
+      500
+    );
   }
 };
 
 module.exports = {
+  getStatus,
   getDoctorAppointments,
   getPatientsAppointments,
   generateDoctorAppointments,

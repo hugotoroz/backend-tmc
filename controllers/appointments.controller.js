@@ -1,4 +1,5 @@
 const {
+  getStatus,
   getDoctorAppointments,
   getPatientsAppointments,
   getFilteredAppointments,
@@ -10,12 +11,33 @@ const {
 const { asyncHandler, AppError } = require("../middleware/errors.middleware");
 const { uploadFiles } = require("./documents.controller");
 
+const getAppointmentStatus = asyncHandler(async (req, res) => {
+
+  const result = await getStatus();
+  if (!result.rows || result.rows.length === 0) {
+    throw new AppError("No se encontraron estados de cita.", 404);
+  }
+
+  res.json({
+    status: "success",
+    data: result.rows,
+  });
+});
+
 const getAppointmentsByDoctor = asyncHandler(async (req, res) => {
   const userId = req.userId;
-  const result = await getDoctorAppointments(userId);
+  const filters = {};
+
+  // Extract filters from query parameters
+  if (req.query.specialityId) filters.specialityId = req.query.specialityId;
+  if (req.query.date) filters.date = req.query.date;
+  if (req.query.time) filters.time = req.query.time;
+  if (req.query.statusId) filters.statusId = req.query.statusId;
+
+  const result = await getDoctorAppointments(userId, filters);
 
   if (!result.rows || result.rows.length === 0) {
-    throw new AppError("No se encontraron citas para este doctor", 404);
+    throw new AppError("No se encontraron citas.", 404);
   }
 
   res.json({
@@ -161,6 +183,7 @@ const createAppointments = asyncHandler(async (req, res) => {
 });
 
 module.exports = {
+  getAppointmentStatus,
   getAppointmentsByDoctor,
   getAppointmentsByPatient,
   generateAppointments,

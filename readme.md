@@ -267,12 +267,27 @@
 
 ## CITAS MÉDICAS
 
+### Obtener los estados de la cita
+
+- **Método:** GET
+- **Ruta:** api/appointments/status
+- **Parámetros:** Auth Bearer Token.
+- **Respuesta:** Lista de los tipos de estados.
+
 ### Obtener citas de un doctor
 
 - **Método:** GET
 - **Ruta:** api/appointments/doctors.
 - **Respuesta:** Todas las citas médicas de un doctor. Independientemente si un paciente la tomó.
-- **Parámetros:** Auth Bearer Token.
+- **Parámetros:**
+  - ?specialityId=(:id_cita)&date=(fecha)&time=(hora)&statusId=(:id_estado).
+  - Auth Bearer Token.
+- **EJEMPLOS DE USO:**
+  - ?specialityId=1
+  - ?date=2024-09-11
+  - ?time=15:00:00
+  - ?date=2024-11-30&time=15:00:00
+  - ?specialityId=1&statusId=1
 
 ### Obtener citas de un paciente
 
