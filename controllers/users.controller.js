@@ -86,6 +86,8 @@ const updateUser = asyncHandler(async (req, res) => {
 
   try {
     const result = await update(userId, updateData);
+    const specialityExists = result.specialityId !== null;
+
 
     // Generate new token with updated information
     const token = generateToken({
@@ -96,6 +98,10 @@ const updateUser = asyncHandler(async (req, res) => {
       roleId: userRole,
       cellphone: result.telefono,
       dateBirth: result.fec_nacimiento,
+      ...(specialityExists && {
+        specialityId: result.specialityId,
+      }),
+
     });
 
     res.json({

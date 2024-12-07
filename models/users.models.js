@@ -73,8 +73,6 @@ const update = async (userId, updateData) => {
     }
   }
 
-
-
   // Build the UPDATE query dynamically
   let updateQuery = "UPDATE usuarios SET ";
   const values = [];
@@ -108,6 +106,23 @@ const update = async (userId, updateData) => {
   }
 
   const { id, rut, email, full, telefono, fec_nacimiento } = result.rows[0];
+  // Validar si es un usuario de rol DOCTOR
+  const isDoctor = await pool.query(
+    "SELECT ur.fk_rol_id FROM usuarios u JOIN usuario_rol ur ON u.id = ur.fk_usuario_id WHERE u.id = $1",
+    [userId]
+  );
+  
+  let specialities = [];
+  if (parseInt(isDoctor.rows[0].fk_rol_id) === ROLES.DOCTOR) {
+    const doctorSpecialities = await pool.query(
+      "SELECT * FROM doctor_especialidad WHERE fk_doctor_id = $1",
+      [userId]
+    );
+
+    specialities = doctorSpecialities.rows.map(
+      (speciality) => speciality.fk_especialidad_id
+    );
+  }
 
   return {
     id,
@@ -116,6 +131,9 @@ const update = async (userId, updateData) => {
     full,
     telefono,
     fec_nacimiento,
+    ...(specialities.length > 0 && {
+      specialityId: specialities,
+    }),
   };
 };
 
